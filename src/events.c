@@ -47,6 +47,19 @@ void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {
   mawim_logf(LOG_DEBUG, "Mapped Window 0x%08x\n", event.window);
 }
 
+void handle_leave_notify(mawim_t *mawim, XLeaveWindowEvent event) {
+  mawim_log(LOG_DEBUG, "Got LeaveNotify!\n");
+
+  XSetInputFocus(mawim->display, event.window, RevertToPointerRoot, CurrentTime);
+  mawim_x11_flush(mawim);
+
+  mawim_logf(LOG_DEBUG, "Set input focus to window 0x%08x\n", event.window);
+}
+
+void handle_enter_notify(mawim_t *mawim, XEnterWindowEvent event) {
+  mawim_log(LOG_DEBUG, "Got EnterNotify! (Not Handling)\n");
+}
+
 bool mawim_handle_event(mawim_t *mawim, XEvent event) {
   switch (event.type) {
   case ButtonPress:
@@ -66,6 +79,12 @@ bool mawim_handle_event(mawim_t *mawim, XEvent event) {
     return true;
   case MapRequest:
     handle_map_request(mawim, event.xmaprequest);
+    return true;
+  case LeaveNotify:
+    handle_leave_notify(mawim, event.xcrossing);
+    return true;
+  case EnterNotify:
+    handle_enter_notify(mawim, event.xcrossing);
     return true;
   default:
     return false;

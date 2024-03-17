@@ -30,8 +30,10 @@ void mawim_x11_init(mawim_t *mawim) {
 
   /* Input Setup */
 
-  XSelectInput(mawim->display, mawim->root,
-               SubstructureRedirectMask | SubstructureNotifyMask);
+  int mask = SubstructureRedirectMask | SubstructureNotifyMask
+           | EnterWindowMask | LeaveWindowMask;
+
+  XSelectInput(mawim->display, mawim->root, mask);
   mawim_x11_flush(mawim);
 
   XGrabButton(mawim->display, Button1, AnyModifier, mawim->root, 0,
