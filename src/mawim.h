@@ -8,14 +8,16 @@
 #ifndef MAWIM_H
 #define MAWIM_H
 
-#include <X11/Xlib.h>
-#include <X11/cursorfont.h>
-
 #define true True
 #define false False
 #define XNULL 0
 
 typedef int bool;
+
+#include "window.h"
+
+#include <X11/Xlib.h>
+#include <X11/cursorfont.h>
 
 /* clang-format off */
 
@@ -24,6 +26,9 @@ typedef struct mawim {
   Display *display;
   Window   root;
   Cursor   cursor;
+
+  /* MaWiM */
+  window_list_t windows;
 } mawim_t;
 
 /* clang-format on */
