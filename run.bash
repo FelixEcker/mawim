@@ -34,6 +34,7 @@ else
   fi
 fi
 
+MAWIM_BIN=$(pwd)/$MAWIM_BIN
 export MAWIM_BIN
 
 XEPHYR=$(command -v Xephyr)

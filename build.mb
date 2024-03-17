@@ -4,13 +4,13 @@ sector config
     str obj 'build/obj/'
     str bindest 'build/'
 
-    list str sources 'mawim'
+    list str sources 'logging', 'events', 'mawim'
   end
 
   section mariebuild
     str build_type 'incremental'
 
-    str cc 'gcc'
+    str cc 'clang'
     str cflags '-Iinclude/ -Isrc/ -Wall -Wextra -std=c17'
 
     str ldflags '-lX11 -lXrandr'

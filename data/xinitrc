@@ -1,3 +1,4 @@
 #!/bin/bash
 
+echo starting mawim from: $MAWIM_BIN
 exec $MAWIM_BIN

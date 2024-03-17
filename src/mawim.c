@@ -1,5 +1,7 @@
 #include "mawim.h"
 
+#include "x_redefs.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,7 +19,7 @@ void mawim_x11_discarding_flush(mawim_t *mawim) {
 }
 
 void mawim_x11_init(mawim_t *mawim) {
-  mawim->display = XOpenDisplay(NULL);
+  mawim->display = XOpenDisplay(XNULL);
   if (mawim->display == NULL) {
     mawim_panic("Could not open a X display!\n");
   }
@@ -39,24 +41,28 @@ void mawim_x11_shutdown(mawim_t *mawim) {
 }
 
 int main(void) {
+  fprintf(stderr, "Running MaWiM!\n");
+
   mawim_t mawim;
 
   mawim_x11_init(&mawim);
 
   XEvent event;
   while (true) {
+    fprintf(stdout, "AJOSDJP\n");
     XNextEvent(mawim.display, &event);
 
     switch (event.type) {
     case ButtonPress:
+      fprintf(stdout, "Button Press!\n");
       XAllowEvents(mawim.display, ReplayPointer, CurrentTime);
-      mawim_x11_flush(&mawim);
-      fprintf(stderr, "Button Press!\n");
+      XSync(mawim.display, 0);
       break;
     }
   }
 
   mawim_x11_shutdown(&mawim);
 
+  fprintf(stderr, "MaWiM: Goodbye!\n");
   return 0;
 }

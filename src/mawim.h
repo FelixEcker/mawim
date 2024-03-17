@@ -1,3 +1,10 @@
+/* mawim.h ; MaWiM core
+ *
+ * Copyright (c) 2024, Marie Eckert
+ * Licensed under the BSD 3-Clause License; See the LICENSE file for further
+ * information.
+ */
+
 #ifndef MAWIM_H
 #define MAWIM_H
 
