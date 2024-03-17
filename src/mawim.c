@@ -44,6 +44,8 @@ void mawim_x11_init(mawim_t *mawim) {
 void mawim_x11_shutdown(mawim_t *mawim) { XCloseDisplay(mawim->display); }
 
 int main(void) {
+  mawim_log_level = DEFAULT_LOG_LEVEL;
+
   mawim_log(LOG_INFO, "Running MaWiM!\n");
 
   mawim_t mawim;

@@ -39,7 +39,7 @@ mkdir -p $(/config/files/obj)
   end
 
   section release
-    str target_cflags ''
+    str target_cflags '-DDEFAULT_LOG_LEVEL=LOG_INFO'
     str target_bindest '$(/config/files/bindest)release/'
 
     list str required_targets 'clean'
