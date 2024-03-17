@@ -22,7 +22,7 @@ typedef int bool;
 typedef struct mawim {
   /* X11 */
   Display *display;
-  Window   root_window;
+  Window   root;
   Cursor   cursor;
 } mawim_t;
 

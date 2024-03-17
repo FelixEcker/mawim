@@ -1,6 +1,7 @@
 #include "mawim.h"
 
-#include "x_redefs.h"
+#include "events.h"
+#include "logging.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,16 +25,22 @@ void mawim_x11_init(mawim_t *mawim) {
     mawim_panic("Could not open a X display!\n");
   }
 
-  mawim->root_window = DefaultRootWindow(mawim->display);
+  mawim->root = DefaultRootWindow(mawim->display);
 
   /* Cursor Setup */
   mawim->cursor = XCreateFontCursor(mawim->display, XC_left_ptr);
-  XDefineCursor(mawim->display, mawim->root_window, mawim->cursor);
+  XDefineCursor(mawim->display, mawim->root, mawim->cursor);
   XSync(mawim->display, false);
 
   /* Input Setup */
-  XGrabButton(mawim->display, Button1, 0, mawim->root_window, 0,
+
+  XSelectInput(mawim->display, mawim->root, 
+               SubstructureRedirectMask | SubstructureNotifyMask);
+  mawim_x11_flush(mawim);
+
+  XGrabButton(mawim->display, Button1, AnyModifier, mawim->root, 0,
               ButtonPressMask, GrabModeSync, GrabModeAsync, XNULL, XNULL);
+  mawim_x11_flush(mawim);
 }
 
 void mawim_x11_shutdown(mawim_t *mawim) {
@@ -41,7 +48,7 @@ void mawim_x11_shutdown(mawim_t *mawim) {
 }
 
 int main(void) {
-  fprintf(stderr, "Running MaWiM!\n");
+  mawim_log(LOG_INFO, "Running MaWiM!\n");
 
   mawim_t mawim;
 
@@ -49,15 +56,11 @@ int main(void) {
 
   XEvent event;
   while (true) {
-    fprintf(stdout, "AJOSDJP\n");
     XNextEvent(mawim.display, &event);
 
-    switch (event.type) {
-    case ButtonPress:
-      fprintf(stdout, "Button Press!\n");
-      XAllowEvents(mawim.display, ReplayPointer, CurrentTime);
-      XSync(mawim.display, 0);
-      break;
+    bool handled = mawim_handle_event(&mawim, event);
+    if (!handled) {
+      mawim_logf(LOG_WARNING, "got unexpected event: %d\n", event.type);
     }
   }
 
