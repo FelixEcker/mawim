@@ -50,7 +50,8 @@ void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {
 void handle_leave_notify(mawim_t *mawim, XLeaveWindowEvent event) {
   mawim_log(LOG_DEBUG, "Got LeaveNotify!\n");
 
-  XSetInputFocus(mawim->display, event.window, RevertToPointerRoot, CurrentTime);
+  XSetInputFocus(mawim->display, event.window, RevertToPointerRoot,
+                 CurrentTime);
   mawim_x11_flush(mawim);
 
   mawim_logf(LOG_DEBUG, "Set input focus to window 0x%08x\n", event.window);

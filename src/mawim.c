@@ -30,8 +30,8 @@ void mawim_x11_init(mawim_t *mawim) {
 
   /* Input Setup */
 
-  int mask = SubstructureRedirectMask | SubstructureNotifyMask
-           | EnterWindowMask | LeaveWindowMask;
+  int mask = SubstructureRedirectMask | SubstructureNotifyMask |
+             EnterWindowMask | LeaveWindowMask;
 
   XSelectInput(mawim->display, mawim->root, mask);
   mawim_x11_flush(mawim);
