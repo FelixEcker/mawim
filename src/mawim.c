@@ -1,4 +1,5 @@
-#include <X11/Xlib.h>
+#include "mawim.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,18 +8,55 @@ void mawim_panic(char *msg) {
   exit(EXIT_FAILURE);
 }
 
-int main(void) {
-  Display *display;
-  Window root_window;
+void mawim_x11_flush(mawim_t *mawim) {
+  XSync(mawim->display, false);
+}
 
-  display = XOpenDisplay(NULL);
-  if (display == NULL) {
+void mawim_x11_discarding_flush(mawim_t *mawim) {
+  XSync(mawim->display, true);
+}
+
+void mawim_x11_init(mawim_t *mawim) {
+  mawim->display = XOpenDisplay(NULL);
+  if (mawim->display == NULL) {
     mawim_panic("Could not open a X display!\n");
   }
 
-  root_window = DefaultRootWindow(display);
+  mawim->root_window = DefaultRootWindow(mawim->display);
 
-  XCloseDisplay(display);
+  /* Cursor Setup */
+  mawim->cursor = XCreateFontCursor(mawim->display, XC_left_ptr);
+  XDefineCursor(mawim->display, mawim->root_window, mawim->cursor);
+  XSync(mawim->display, false);
+
+  /* Input Setup */
+  XGrabButton(mawim->display, Button1, 0, mawim->root_window, 0,
+              ButtonPressMask, GrabModeSync, GrabModeAsync, XNULL, XNULL);
+}
+
+void mawim_x11_shutdown(mawim_t *mawim) {
+  XCloseDisplay(mawim->display);
+}
+
+int main(void) {
+  mawim_t mawim;
+
+  mawim_x11_init(&mawim);
+
+  XEvent event;
+  while (true) {
+    XNextEvent(mawim.display, &event);
+
+    switch (event.type) {
+    case ButtonPress:
+      XAllowEvents(mawim.display, ReplayPointer, CurrentTime);
+      mawim_x11_flush(&mawim);
+      fprintf(stderr, "Button Press!\n");
+      break;
+    }
+  }
+
+  mawim_x11_shutdown(&mawim);
 
   return 0;
 }
