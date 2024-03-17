@@ -36,7 +36,7 @@ int mawim_logf(log_level_t level, const char *format, ...) {
   switch (level) {
   default:
   case LOG_DEBUG:
-    level_prefix = "DBG";
+    level_prefix = ANSI_BOLD ANSI_FG_CYAN "DBG" ANSI_RESET;
     break;
   case LOG_INFO:
     level_prefix = ANSI_BOLD ANSI_FG_GREEN "INF" ANSI_RESET;
