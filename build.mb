@@ -10,8 +10,8 @@ sector config
   section mariebuild
     str build_type 'incremental'
 
-    str cc 'clang'
-    str cflags '-Iinclude/ -Isrc/'
+    str cc 'gcc'
+    str cflags '-Iinclude/ -Isrc/ -Wall -Wextra -std=c17'
 
     str ldflags '-lX11 -lXrandr'
 
