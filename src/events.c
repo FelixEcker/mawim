@@ -34,7 +34,7 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
 
   XConfigureWindow(mawim->display, event.window, event.value_mask, &changes);
   mawim_logf(LOG_DEBUG, "Configured Window 0x%08x to dimensions %dx%d\n",
-            event.window, event.width, event.height);
+             event.window, event.width, event.height);
 }
 
 void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {

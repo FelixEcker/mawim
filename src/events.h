@@ -12,7 +12,7 @@
 
 /**
  * @brief handle the passed event
- * @return true - event went handled, false - event went unhandled 
+ * @return true - event went handled, false - event went unhandled
  */
 bool mawim_handle_event(mawim_t *mawim, XEvent event);
 

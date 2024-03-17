@@ -11,13 +11,9 @@ void mawim_panic(char *msg) {
   exit(EXIT_FAILURE);
 }
 
-void mawim_x11_flush(mawim_t *mawim) {
-  XSync(mawim->display, false);
-}
+void mawim_x11_flush(mawim_t *mawim) { XSync(mawim->display, false); }
 
-void mawim_x11_discarding_flush(mawim_t *mawim) {
-  XSync(mawim->display, true);
-}
+void mawim_x11_discarding_flush(mawim_t *mawim) { XSync(mawim->display, true); }
 
 void mawim_x11_init(mawim_t *mawim) {
   mawim->display = XOpenDisplay(XNULL);
@@ -34,7 +30,7 @@ void mawim_x11_init(mawim_t *mawim) {
 
   /* Input Setup */
 
-  XSelectInput(mawim->display, mawim->root, 
+  XSelectInput(mawim->display, mawim->root,
                SubstructureRedirectMask | SubstructureNotifyMask);
   mawim_x11_flush(mawim);
 
@@ -43,9 +39,7 @@ void mawim_x11_init(mawim_t *mawim) {
   mawim_x11_flush(mawim);
 }
 
-void mawim_x11_shutdown(mawim_t *mawim) {
-  XCloseDisplay(mawim->display);
-}
+void mawim_x11_shutdown(mawim_t *mawim) { XCloseDisplay(mawim->display); }
 
 int main(void) {
   mawim_log(LOG_INFO, "Running MaWiM!\n");

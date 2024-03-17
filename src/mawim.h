@@ -33,7 +33,7 @@ typedef struct mawim {
  */
 void mawim_panic(char *msg);
 
-/** 
+/**
  * @brief flushes x11 events
  * @see mawim_x11_discarding_flush
  * @see XSync
