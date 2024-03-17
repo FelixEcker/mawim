@@ -1,0 +1,4 @@
+MaWiM
+
+- Automatic Tiling
+- Floating Window Support
