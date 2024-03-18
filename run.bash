@@ -41,4 +41,7 @@ export MAWIM_BIN
 XEPHYR=$(command -v Xephyr)
 
 echo "==> Running..."
-xinit ./data/xinitrc -- "$XEPHYR" :100 -ac -screen 3840x2160 -host-cursor
+xinit ./data/xinitrc -- "$XEPHYR" :101 -ac -screen 1920x1080 -host-cursor &
+sleep 5
+mawim_pid=$(pgrep -n mawim)
+sudo -E gdb -p ${mawim_pid}
