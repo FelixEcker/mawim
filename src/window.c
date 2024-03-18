@@ -225,6 +225,10 @@ void mawim_remove_window(window_list_t *list, Window window) {
     current = current->next;
   }
 
+  if (current->x11_window != window) {
+    return;
+  }
+
   if (previous != NULL) {
     previous->next = current->next;
   }
