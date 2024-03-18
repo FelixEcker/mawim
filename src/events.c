@@ -1,3 +1,10 @@
+/* events.c ; MaWiM Event Handling
+ *
+ * Copyright (c) 2024, Marie Eckert
+ * Licensed under the BSD 3-Clause License; See the LICENSE file for further
+ * information.
+ */
+
 #include "events.h"
 
 #include "logging.h"

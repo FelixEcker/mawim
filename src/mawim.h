@@ -14,6 +14,8 @@
 #include <X11/Xlib.h>
 #include <X11/cursorfont.h>
 
+#define MAWIM_VERSION "0.0.0"
+
 /* clang-format off */
 
 typedef struct mawim {

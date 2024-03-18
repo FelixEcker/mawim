@@ -1,3 +1,10 @@
+/* mawim.c ; MaWiM core
+ *
+ * Copyright (c) 2024, Marie Eckert
+ * Licensed under the BSD 3-Clause License; See the LICENSE file for further
+ * information.
+ */
+
 #include "mawim.h"
 
 #include "events.h"
@@ -46,7 +53,7 @@ void mawim_x11_shutdown(mawim_t *mawim) { XCloseDisplay(mawim->display); }
 int main(void) {
   mawim_log_level = DEFAULT_LOG_LEVEL;
 
-  mawim_log(LOG_INFO, "Running MaWiM!\n");
+  mawim_log(LOG_INFO, "Running MaWiM v" MAWIM_VERSION "\n");
 
   mawim_t mawim;
 
