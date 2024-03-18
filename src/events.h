@@ -10,6 +10,8 @@
 
 #include "mawim.h"
 
+extern const char *event_type_str[];
+
 /**
  * @brief handle the passed event
  * @return true - event went handled, false - event went unhandled

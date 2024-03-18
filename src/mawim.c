@@ -71,7 +71,8 @@ int main(void) {
 
     bool handled = mawim_handle_event(&mawim, event);
     if (!handled) {
-      mawim_logf(LOG_WARNING, "got unexpected event: %d\n", event.type);
+      mawim_logf(LOG_WARNING, "got unexpected event: %s\n",
+                 event_type_str[event.type]);
     }
   }
 

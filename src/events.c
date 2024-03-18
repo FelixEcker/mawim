@@ -10,6 +10,17 @@
 #include "logging.h"
 #include "xmem.h"
 
+const char *event_type_str[37] = {
+    (char *)0,        (char *)1,        "KeyPress",         "KeyRelease",
+    "ButtonPress",    "ButtonRelease",  "MotionNotify",     "EnterNotify",
+    "LeaveNotify",    "FocusIn",        "FocusOut",         "KeymapNotify",
+    "Expose",         "GraphicsExpose", "NoExpose",         "VisibilityNotify",
+    "CreateNotify",   "DestroyNotify",  "UnmapNotify",      "MapNotify",
+    "MapRequest",     "ReparentNotify", "ConfigureNotify",  "ConfigureRequest",
+    "GravityNotify",  "ResizeRequest",  "CirculateNotify",  "CirculateRequest",
+    "PropertyNotify", "SelectionClear", "SelectionRequest", "SelectionNotify",
+    "ColormapNotify", "ClientMessage",  "MappingNotify",    "GenericEvent",
+    "LASTEvent"};
 void handle_button_press(mawim_t *mawim, XEvent event) {
   mawim_log(LOG_DEBUG, "Got ButtonPress!\n");
   XAllowEvents(mawim->display, ReplayPointer, CurrentTime);
