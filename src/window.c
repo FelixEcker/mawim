@@ -233,6 +233,7 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
   mawim_window->next = NULL;
 
   if (list->first == NULL) {
+    mawim_logf(LOG_DEBUG, "SET FIRST WINDOW (%p)\n", mawim_window);
     list->first = mawim_window;
     list->last = mawim_window;
 
@@ -243,14 +244,16 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
   list->last = mawim_window;
 }
 
-void mawim_remove_window(window_list_t *list, Window window) {
-  if (list->first == NULL) {
+void mawim_remove_window(mawim_t *mawim, Window window) {
+  if (mawim->windows.first == NULL) {
+    mawim_log(LOG_DEBUG, "remove_window: windows.first == NULL\n");
     return;
   }
 
-  mawim_window_t *current = list->first;
+  mawim_window_t *current = mawim->windows.first;
   mawim_window_t *previous = NULL;
 
+  mawim_logf(LOG_DEBUG, "current = %p\n", current);
   while (current->next != NULL) {
     if (current->x11_window == window)
       break;
@@ -263,22 +266,33 @@ void mawim_remove_window(window_list_t *list, Window window) {
     previous->next = current->next;
   }
 
-  if (current == list->last) {
-    list->last = previous;
+  if (current == mawim->windows.last) {
+    mawim->windows.last = previous;
   }
-  if (current == list->first) {
-    list->first = NULL;
+  if (current == mawim->windows.first) {
+    mawim->windows.first = current->next;
   }
 
   /* Update Column index for windows on the row */
   mawim_window_t **row_wins;
 
   /* This causes a memory leak; too bad! */
-  int wins = mawim_get_wins_on_row(list, current->row, &row_wins);
+  int wins = mawim_get_wins_on_row(&mawim->windows, current->row, &row_wins);
 
   for (int i = 0; i < wins; i++) {
     if (row_wins[i]->col > current->col) {
       row_wins[i]->col--;
+    }
+  }
+
+  if (wins - 1 <= 0) {
+    mawim_log(LOG_DEBUG, "Moving up 1 row\n");
+    for (int nr = current->row + 1; nr < mawim->max_rows; nr++) {
+      wins = mawim_get_wins_on_row(&mawim->windows, nr, &row_wins);
+
+      for (int i = 0; i < wins; i++) {
+        row_wins[i]->row--;
+      }
     }
   }
 
