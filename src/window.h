@@ -8,15 +8,16 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "types.h"
 #include "mawim.h"
+#include "types.h"
 
 /* management operations */
 
 /**
  * @brief Begin managing a window
  */
-void mawim_manage_window(mawim_t *mawim, mawim_window_t *window);
+bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
+                         XConfigureRequestEvent event);
 
 /**
  * @brief Stop managing a window
@@ -34,6 +35,11 @@ mawim_window_t *mawim_find_window(window_list_t *list, Window window);
  * @brief Checks if the given x11 window is currently being managed
  */
 bool mawim_is_window_managed(window_list_t *list, Window window);
+
+/**
+ * @brief Get the amount of windows currently registered with MaWiM
+ */
+int mawim_window_count(window_list_t *list);
 
 /**
  * @brief Appends the given mawim window to the list

@@ -21,7 +21,7 @@ void handle_create_notify(mawim_t *mawim, XCreateWindowEvent event) {
 
   mawim_window_t *window = xmalloc(sizeof(mawim_window_t));
   window->x11_window = event.window;
-  window->managed = false;
+  window->managed = true;
   window->x = event.x;
   window->y = event.y;
   window->width = event.width;
@@ -31,7 +31,7 @@ void handle_create_notify(mawim_t *mawim, XCreateWindowEvent event) {
 }
 
 void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
-  mawim_log(LOG_DEBUG, "Got DestroyNotify!\n");
+  mawim_logf(LOG_DEBUG, "Got DestroyNotify (window 0x%08x)!\n", event.window);
 
   mawim_remove_window(&mawim->windows, event.window);
 }
@@ -43,20 +43,40 @@ void handle_reparent_notify(mawim_t *mawim, XEvent event) {
 void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
   mawim_log(LOG_DEBUG, "Got ConfigureRequest!\n");
 
-  XWindowChanges changes;
-  changes.x = event.x;
-  changes.y = event.y;
-  changes.width = event.width;
-  changes.height = event.height;
-  changes.border_width = event.border_width;
-  changes.sibling = event.above;
-  changes.stack_mode = event.detail;
+  mawim_window_t *mawim_win = mawim_find_window(&mawim->windows, event.window);
+  if (mawim_win == NULL) {
+    mawim_logf(LOG_WARNING,
+               "ConfigureRequest is for window 0x%08x which was not previously "
+               "registered!\n",
+               event.window);
 
-  XConfigureWindow(mawim->display, event.window, event.value_mask, &changes);
+    mawim_window_t *window = xmalloc(sizeof(mawim_window_t));
+    window->x11_window = event.window;
+    window->managed = true;
+    window->x = event.x;
+    window->y = event.y;
+    window->width = event.width;
+    window->height = event.height;
+
+    mawim_append_window(&mawim->windows, window);
+    mawim_win = window;
+  }
+
+  bool manage_result = mawim_manage_window(mawim, mawim_win, event);
+  if (manage_result) {
+    mawim_log(LOG_DEBUG, "Window is being managed now!\n");
+  } else {
+    mawim_log(LOG_DEBUG, "Window is not being managed!\n");
+  }
+
+  XConfigureWindow(mawim->display, event.window,
+                   event.value_mask | CWX | CWY | CWWidth | CWHeight,
+                   &mawim_win->changes);
   mawim_logf(
       LOG_DEBUG,
       "Configured Window 0x%08x to dimensions %dx%d at coordinates %dx%d\n",
-      event.window, changes.width, changes.height, changes.x, changes.y);
+      event.window, mawim_win->changes.width, mawim_win->changes.height,
+      mawim_win->changes.x, mawim_win->changes.y);
 }
 
 void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {

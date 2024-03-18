@@ -32,6 +32,7 @@ typedef struct mawim_window {
 
   /* X11 */
   Window x11_window;
+  XWindowChanges changes;
   
   /* Metadata */
   bool managed;
