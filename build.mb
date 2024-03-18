@@ -24,9 +24,16 @@ sector targets
   section clean
     str exec '#!/bin/sh
 if [ -d $(/config/files/obj) ]; then
+  echo "Removing old object files"
   rm -rf $(/config/files/obj)
 fi
 
+if [ -d $(/config/files/bindest) ]; then
+  echo "Removing old binaries"
+  rm -rf $(/config/files/bindest)
+fi
+
+mkdir -p $(/config/files/bindest)
 mkdir -p $(/config/files/obj)
       '
   end
