@@ -285,7 +285,7 @@ void mawim_remove_window(mawim_t *mawim, Window window) {
     }
   }
 
-  if (wins - 1 <= 0) {
+  if (wins <= 0) {
     mawim_log(LOG_DEBUG, "Moving up 1 row\n");
     for (int nr = current->row + 1; nr < mawim->max_rows; nr++) {
       wins = mawim_get_wins_on_row(&mawim->windows, nr, &row_wins);
@@ -294,6 +294,8 @@ void mawim_remove_window(mawim_t *mawim, Window window) {
         row_wins[i]->row--;
       }
     }
+
+    mawim->active_row = current->row;
   }
 
   /* xfree(row_wins); For some Reason row_wins is a stack-address (???) */
