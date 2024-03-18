@@ -44,7 +44,7 @@ mawim_window_t *mawim_find_window(window_list_t *list, Window window);
 /**
  * @brief Finds all windows on the given row
  */
-int mawim_get_wins_on_row(window_list_t *list, int row, mawim_window_t **dest);
+int mawim_get_wins_on_row(window_list_t *list, int row, mawim_window_t ***dest);
 
 /**
  * @brief Checks if the given x11 window is currently being managed

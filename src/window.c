@@ -42,7 +42,8 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   /* Calculate */
   int count = mawim_get_wins_on_row(&mawim->windows, window->row, NULL);
 
-  window->width = DisplayWidth(mawim->display, mawim->default_screen) / max(count, 1);
+  window->width =
+      DisplayWidth(mawim->display, mawim->default_screen) / max(count, 1);
   window->height = DisplayHeight(mawim->display, mawim->default_screen) /
                    (mawim->active_row + 1);
   window->x = window->width * window->col;
@@ -90,7 +91,7 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
     }
   }
 
-  mawim_window_t *row_wins;
+  mawim_window_t **row_wins;
   int wins = mawim_get_wins_on_row(&mawim->windows, window->row, &row_wins);
   mawim_logf(LOG_DEBUG, "windows on row %d = %d out of %d\n", window->row, wins,
              mawim_window_count(&mawim->windows));
@@ -102,7 +103,9 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
 
   if (!new_row) {
     for (int i = 0; i < wins; i++) {
-      mawim_update_window(mawim, &row_wins[i]);
+      mawim_logf(LOG_DEBUG, "Update! 0x%08x%s\n", window->x11_window,
+                 row_wins[i]->x11_window == window->x11_window ? " (own)" : "");
+      mawim_update_window(mawim, row_wins[i]);
     }
   } else {
     mawim->active_row = window->row;
@@ -154,7 +157,8 @@ mawim_window_t *mawim_find_window(window_list_t *list, Window window) {
   return current->x11_window == window ? current : NULL;
 }
 
-int mawim_get_wins_on_row(window_list_t *list, int row, mawim_window_t **dest) {
+int mawim_get_wins_on_row(window_list_t *list, int row,
+                          mawim_window_t ***dest) {
   if (list->first == NULL) {
     return 0;
   }
@@ -175,19 +179,19 @@ int mawim_get_wins_on_row(window_list_t *list, int row, mawim_window_t **dest) {
 
   /* Loop a second time to get all the windows */
 
-  *dest = xmalloc(sizeof(mawim_window_t) * count);
+  *dest = xmalloc(sizeof(mawim_window_t *) * count);
   current = list->first;
 
   int wix = 0;
   if (current->row == row) {
-    dest[wix] = current;
+    (*dest)[wix] = current;
     wix++;
   }
 
-  while (current->next != NULL) {
+  while (current->next != NULL && wix < count) {
     current = current->next;
     if (current->row == row) {
-      dest[wix] = current;
+      (*dest)[wix] = current;
       wix++;
     }
   }
@@ -223,6 +227,7 @@ int mawim_window_count(window_list_t *list) {
 
 void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
   mawim_log(LOG_DEBUG, "APPEND!\n");
+  mawim_logf(LOG_DEBUG, "x11_window = 0x%08x\n", mawim_window->x11_window);
   mawim_window->next = NULL;
 
   if (list->first == NULL) {
