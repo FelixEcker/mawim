@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include "xmem.h"
+
 #include <stdlib.h>
 
 mawim_window_t *mawim_find_window(window_list_t *list, Window window) {
@@ -70,7 +72,7 @@ void mawim_remove_window(window_list_t *list, Window window) {
     list->first = NULL;
   }
 
-  free(current);
+  xfree(current);
 }
 
 void mawim_destroy_window_list(window_list_t *list) {
@@ -82,9 +84,9 @@ void mawim_destroy_window_list(window_list_t *list) {
 
   while (current->next != NULL) {
     mawim_window_t *next = current->next;
-    free(current);
+    xfree(current);
     current = next;
   }
 
-  free(current);
+  xfree(current);
 }
