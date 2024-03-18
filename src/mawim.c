@@ -29,6 +29,7 @@ void mawim_x11_init(mawim_t *mawim) {
   }
 
   mawim->root = DefaultRootWindow(mawim->display);
+  mawim->default_screen = DefaultScreen(mawim->display);
 
   /* Cursor Setup */
   mawim->cursor = XCreateFontCursor(mawim->display, XC_left_ptr);

@@ -46,6 +46,7 @@ typedef struct mawim_window {
 typedef struct mawim {
   /* X11 */
   Display *display;
+  int      default_screen;
   Window   root;
   Cursor   cursor;
 
