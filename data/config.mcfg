@@ -1,0 +1,20 @@
+sector mawim
+  section bordering
+    u32 top_gap 5
+    u32 bottom_gap 5
+    u32 left_gap 5
+    u32 right_gap 5
+
+    str active_border_color '#ff0000'
+    str inactive_border_color '#333333'
+  end
+
+  section bind
+    str binds '
+super p exec rofi -show run
+super enter exec alacritty
+super q quit
+super shift r reload
+    '
+  end
+end
