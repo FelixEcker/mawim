@@ -1,4 +1,4 @@
-/* window.h ; Window and Window-List header
+/* window.h ; MaWiM Window Management and Window-List
  *
  * Copyright (c) 2024, Marie Eckert
  * Licensed under the BSD 3-Clause License; See the LICENSE file for further
@@ -8,37 +8,22 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "xbool.h"
+#include "types.h"
+#include "mawim.h"
 
-#include <X11/Xlib.h>
+/* management operations */
 
-typedef struct mawim_window mawim_window_t;
+/**
+ * @brief Begin managing a window
+ */
+void mawim_manage_window(mawim_t *mawim, mawim_window_t *window);
 
-/* clang-format off */
+/**
+ * @brief Stop managing a window
+ */
+void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window);
 
-typedef struct mawim_window {
-  mawim_window_t *next;
-
-  /* X11 */
-  Window x11_window;
-  
-  /* Metadata */
-  bool managed;
-  
-  /* Positioning */
-  int x;
-  int y;
-  int width;
-  int height;
-} mawim_window_t;
-
-typedef struct window_list {
-  size_t          window_count;
-  mawim_window_t *first;
-  mawim_window_t *last;
-} window_list_t;
-
-/* clang-format on */
+/* window list operations */
 
 /**
  * @brief Finds the provided x11 window in the provided window list

@@ -1,8 +1,27 @@
+/* window.c ; MaWiM Window Management and Window-List
+ *
+ * Copyright (c) 2024, Marie Eckert
+ * Licensed under the BSD 3-Clause License; See the LICENSE file for further
+ * information.
+ */
+
 #include "window.h"
 
 #include "xmem.h"
 
 #include <stdlib.h>
+
+/* management operations */
+
+void mawim_manage_window(mawim_t *mawim, mawim_window_t *window) {
+  window->managed = true;
+}
+
+void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
+  window->managed = false;
+}
+
+/* window list operations */
 
 mawim_window_t *mawim_find_window(window_list_t *list, Window window) {
   if (list->first == NULL) {
