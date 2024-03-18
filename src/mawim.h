@@ -8,8 +8,8 @@
 #ifndef MAWIM_H
 #define MAWIM_H
 
-#include "xbool.h"
 #include "window.h"
+#include "xbool.h"
 
 #include <X11/Xlib.h>
 #include <X11/cursorfont.h>

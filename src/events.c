@@ -8,6 +8,7 @@
 #include "events.h"
 
 #include "logging.h"
+#include "xmem.h"
 
 void handle_button_press(mawim_t *mawim, XEvent event) {
   mawim_log(LOG_DEBUG, "Got ButtonPress!\n");
@@ -15,8 +16,18 @@ void handle_button_press(mawim_t *mawim, XEvent event) {
   mawim_x11_flush(mawim);
 }
 
-void handle_create_notify(mawim_t *mawim, XEvent event) {
+void handle_create_notify(mawim_t *mawim, XCreateWindowEvent event) {
   mawim_log(LOG_DEBUG, "Got CreateNotify!\n");
+
+  mawim_window_t *window = xmalloc(sizeof(mawim_window_t));
+  window->x11_window = event.window;
+  window->managed = false;
+  window->x = event.x;
+  window->y = event.y;
+  window->width = event.width;
+  window->height = event.height;
+
+  mawim_append_window(&mawim->windows, window);
 }
 
 void handle_destroy_notify(mawim_t *mawim, XEvent event) {
@@ -74,7 +85,7 @@ bool mawim_handle_event(mawim_t *mawim, XEvent event) {
     handle_button_press(mawim, event);
     return true;
   case CreateNotify:
-    handle_create_notify(mawim, event);
+    handle_create_notify(mawim, event.xcreatewindow);
     return true;
   case DestroyNotify:
     handle_destroy_notify(mawim, event);

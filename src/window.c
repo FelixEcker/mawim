@@ -2,9 +2,32 @@
 
 #include <stdlib.h>
 
+mawim_window_t *mawim_find_window(window_list_t *list, Window window) {
+  if (list->first == NULL) {
+    return NULL;
+  }
+
+  mawim_window_t *current = list->first;
+  while (current->next != NULL && current->x11_window != window) {
+    current = current->next;
+  }
+
+  return current;
+}
+
+bool mawim_is_window_managed(window_list_t *list, Window window) {
+  mawim_window_t *mawim_window = mawim_find_window(list, window);
+
+  if (mawim_window == NULL) {
+    return false;
+  }
+
+  return mawim_window->managed;
+}
+
 void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
   mawim_window->next = NULL;
-  
+
   if (list->first == NULL) {
     list->first = mawim_window;
 
@@ -56,7 +79,7 @@ void mawim_destroy_window_list(window_list_t *list) {
   }
 
   mawim_window_t *current = list->first;
-  
+
   while (current->next != NULL) {
     mawim_window_t *next = current->next;
     free(current);

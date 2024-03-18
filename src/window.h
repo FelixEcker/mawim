@@ -19,8 +19,17 @@ typedef struct mawim_window mawim_window_t;
 typedef struct mawim_window {
   mawim_window_t *next;
 
+  /* X11 */
   Window x11_window;
-  bool   managed;
+  
+  /* Metadata */
+  bool managed;
+  
+  /* Positioning */
+  int x;
+  int y;
+  int width;
+  int height;
 } mawim_window_t;
 
 typedef struct window_list {
