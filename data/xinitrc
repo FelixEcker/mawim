@@ -2,6 +2,9 @@
 
 echo starting mawim from: $MAWIM_BIN
 
+picom &
+nitrogen --restore
+
 if [[ ! -z "$MAWIM_VALGRIND" ]]; then
   exec valgrind $MAWIM_VALGRIND_FLAGS $MAWIM_BIN
 else
