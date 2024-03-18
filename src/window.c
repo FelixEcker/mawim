@@ -37,13 +37,17 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   /* Calculate */
   int count = mawim_get_wins_on_row(&mawim->windows, window->row, NULL);
 
-  window->width = DisplayWidth(mawim->display, mawim->default_screen) / max(count, 1);
-  window->height = DisplayHeight(mawim->display, mawim->default_screen) / max(mawim->active_row, 1);
+  window->width =
+      DisplayWidth(mawim->display, mawim->default_screen) / max(count, 1);
+  window->height = DisplayHeight(mawim->display, mawim->default_screen) /
+                   max(mawim->active_row, 1);
   window->x = window->width * window->col;
   window->y = window->height * window->row;
 
-  mawim_logf(LOG_DEBUG, "New Dimensions: col %d row %d, size %dx%d, pos %dx%d\n",
-            window->col, window->row, window->width, window->height, window->x, window->y);
+  mawim_logf(LOG_DEBUG,
+             "New Dimensions: col %d row %d, size %dx%d, pos %dx%d\n",
+             window->col, window->row, window->width, window->height, window->x,
+             window->y);
 
   /* Apply */
 
@@ -60,12 +64,13 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
   if (mawim_find_window(&mawim->windows, window->x11_window) == NULL) {
     return false;
   }
-  
+
   bool new_row = false;
 
   if (window->row < 0) {
     window->row = mawim->active_row;
-    if (mawim_get_wins_on_row(&mawim->windows, window->row, NULL) == mawim->max_rows) {
+    if (mawim_get_wins_on_row(&mawim->windows, window->row, NULL) ==
+        mawim->max_rows) {
       int old = window->row;
       window->row = min(window->row + 1, mawim->max_rows - 1);
 
@@ -77,7 +82,7 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
   mawim_window_t *row_wins;
   int wins = mawim_get_wins_on_row(&mawim->windows, window->row, &row_wins);
   mawim_logf(LOG_DEBUG, "windows on row %d = %d out of %d\n", window->row, wins,
-      mawim_window_count(&mawim->windows));
+             mawim_window_count(&mawim->windows));
   if (window->col < 0) {
     window->col = wins - 1;
   }
@@ -143,7 +148,7 @@ int mawim_get_wins_on_row(window_list_t *list, int row, mawim_window_t **dest) {
 
   *dest = xmalloc(sizeof(mawim_window_t) * count);
   current = list->first;
-  
+
   int wix = 0;
   if (current->row == row) {
     dest[wix] = current;
