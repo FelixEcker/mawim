@@ -11,7 +11,15 @@
 #include "mawim.h"
 #include "types.h"
 
-/* management operations */
+/* window operations */
+
+mawim_window_t *mawim_create_window(Window win, int x, int y, int width,
+                                    int height, bool managed);
+
+/**
+ * @brief Updates a window's geometry and configures it
+ */
+void mawim_update_window(mawim_t *mawim, mawim_window_t *window);
 
 /**
  * @brief Begin managing a window
@@ -30,6 +38,11 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window);
  * @brief Finds the provided x11 window in the provided window list
  */
 mawim_window_t *mawim_find_window(window_list_t *list, Window window);
+
+/**
+ * @brief Finds all windows on the given row
+ */
+int mawim_get_wins_on_row(window_list_t *list, int row, mawim_window_t **dest);
 
 /**
  * @brief Checks if the given x11 window is currently being managed

@@ -42,6 +42,9 @@ typedef struct mawim_window {
   int y;
   int width;
   int height;
+
+  int row;
+  int col;
 } mawim_window_t;
 
 typedef struct mawim {
@@ -53,6 +56,10 @@ typedef struct mawim {
 
   /* MaWiM */
   window_list_t windows;
+
+  int max_cols;
+  int max_rows;
+  int active_row;
 } mawim_t;
 
 /* clang-format on */

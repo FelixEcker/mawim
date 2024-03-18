@@ -57,6 +57,9 @@ int main(void) {
   mawim_log(LOG_INFO, "Running MaWiM v" MAWIM_VERSION "\n");
 
   mawim_t mawim;
+  mawim.max_cols = 2;
+  mawim.max_rows = 3;
+  mawim.active_row = 0;
 
   mawim_x11_init(&mawim);
 

@@ -18,16 +18,6 @@ void handle_button_press(mawim_t *mawim, XEvent event) {
 
 void handle_create_notify(mawim_t *mawim, XCreateWindowEvent event) {
   mawim_log(LOG_DEBUG, "Got CreateNotify!\n");
-
-  mawim_window_t *window = xmalloc(sizeof(mawim_window_t));
-  window->x11_window = event.window;
-  window->managed = true;
-  window->x = event.x;
-  window->y = event.y;
-  window->width = event.width;
-  window->height = event.height;
-
-  mawim_append_window(&mawim->windows, window);
 }
 
 void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
@@ -50,17 +40,20 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
                "registered!\n",
                event.window);
 
-    mawim_window_t *window = xmalloc(sizeof(mawim_window_t));
-    window->x11_window = event.window;
-    window->managed = true;
-    window->x = event.x;
-    window->y = event.y;
-    window->width = event.width;
-    window->height = event.height;
-
+    mawim_window_t *window = mawim_create_window(
+        event.window, event.x, event.y, event.width, event.height, true);
     mawim_append_window(&mawim->windows, window);
     mawim_win = window;
   }
+
+  /* Copy over initial configuration */
+  mawim_win->changes.x = event.x;
+  mawim_win->changes.y = event.y;
+  mawim_win->changes.width = event.width;
+  mawim_win->changes.height = event.height;
+  mawim_win->changes.border_width = event.border_width;
+  mawim_win->changes.sibling = event.above;
+  mawim_win->changes.stack_mode = event.detail;
 
   bool manage_result = mawim_manage_window(mawim, mawim_win, event);
   if (manage_result) {
@@ -69,9 +62,6 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
     mawim_log(LOG_DEBUG, "Window is not being managed!\n");
   }
 
-  XConfigureWindow(mawim->display, event.window,
-                   event.value_mask | CWX | CWY | CWWidth | CWHeight,
-                   &mawim_win->changes);
   mawim_logf(
       LOG_DEBUG,
       "Configured Window 0x%08x to dimensions %dx%d at coordinates %dx%d\n",
