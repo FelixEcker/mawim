@@ -181,7 +181,6 @@ int mawim_get_wins_on_row(window_list_t *list, int row,
 
   /* Loop a second time to get all the windows */
 
-  /* This causes a memory leak; too bad! */
   *dest = xmalloc(sizeof(mawim_window_t *) * count);
   current = list->first;
 
@@ -273,6 +272,8 @@ void mawim_remove_window(window_list_t *list, Window window) {
 
   /* Update Column index for windows on the row */
   mawim_window_t **row_wins;
+
+  /* This causes a memory leak; too bad! */
   int wins = mawim_get_wins_on_row(list, current->row, &row_wins);
 
   for (int i = 0; i < wins; i++) {
@@ -281,6 +282,7 @@ void mawim_remove_window(window_list_t *list, Window window) {
     }
   }
 
+  /* xfree(row_wins); For some Reason row_wins is a stack-address (???) */
   xfree(current);
 }
 

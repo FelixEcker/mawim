@@ -24,10 +24,6 @@ void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
   mawim_logf(LOG_DEBUG, "Got DestroyNotify (window 0x%08x)!\n", event.window);
 
   mawim_remove_window(&mawim->windows, event.window);
-
-  /* Reset active row to 0 so that new windows spawn in places which are
-   * currently "empty" */
-  //mawim->active_row = 0;
   mawim_update_all_windows(mawim);
 
   mawim_log(LOG_DEBUG, "DestroyNotify finished!\n");
@@ -74,10 +70,6 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
       "Configured Window 0x%08x to dimensions %dx%d at coordinates %dx%d\n",
       event.window, mawim_win->changes.width, mawim_win->changes.height,
       mawim_win->changes.x, mawim_win->changes.y);
-
-  /* Reset active row to 0 so that new windows spawn in places which are
-   * currently "empty" */
-  //mawim->active_row = 0;
 }
 
 void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {
