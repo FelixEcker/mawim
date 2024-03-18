@@ -30,8 +30,10 @@ void handle_create_notify(mawim_t *mawim, XCreateWindowEvent event) {
   mawim_append_window(&mawim->windows, window);
 }
 
-void handle_destroy_notify(mawim_t *mawim, XEvent event) {
+void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
   mawim_log(LOG_DEBUG, "Got DestroyNotify!\n");
+
+  mawim_remove_window(&mawim->windows, event.window);
 }
 
 void handle_reparent_notify(mawim_t *mawim, XEvent event) {
@@ -88,7 +90,7 @@ bool mawim_handle_event(mawim_t *mawim, XEvent event) {
     handle_create_notify(mawim, event.xcreatewindow);
     return true;
   case DestroyNotify:
-    handle_destroy_notify(mawim, event);
+    handle_destroy_notify(mawim, event.xdestroywindow);
     return true;
   case ReparentNotify:
     handle_reparent_notify(mawim, event);
