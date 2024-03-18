@@ -21,6 +21,7 @@ int max(int a, int b) { return a > b ? a : b; }
 mawim_window_t *mawim_create_window(Window win, int x, int y, int width,
                                     int height, bool managed) {
   mawim_window_t *window = xmalloc(sizeof(mawim_window_t));
+  window->next = NULL;
   window->x11_window = win;
   window->managed = managed;
   window->x = x;
@@ -34,6 +35,10 @@ mawim_window_t *mawim_create_window(Window win, int x, int y, int width,
 }
 
 void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
+  if (window == NULL) {
+    return;
+  }
+
   /* Calculate */
   int count = mawim_get_wins_on_row(&mawim->windows, window->row, NULL);
 
@@ -51,8 +56,14 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
 
   /* Apply */
 
-  XMoveResizeWindow(mawim->display, window->x11_window, window->x, window->y,
-                    window->width, window->height);
+  window->changes.x = window->x;
+  window->changes.y = window->y;
+  window->changes.width = window->width;
+  window->changes.height = window->height;
+
+  int mask = CWX | CWY | CWWidth | CWHeight;
+  XConfigureWindow(mawim->display, window->x11_window, mask, &window->changes);
+  mawim_x11_flush(mawim);
 }
 
 bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
@@ -109,7 +120,13 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
 }
 
 void mawim_update_all_windows(mawim_t *mawim) {
+  mawim_log(LOG_DEBUG, "Update ALL Windows!\n");
+
   mawim_window_t *current = mawim->windows.first;
+  if (current == NULL) {
+    return;
+  }
+
   mawim_update_window(mawim, current);
 
   while (current->next != NULL) {
@@ -233,10 +250,6 @@ void mawim_remove_window(window_list_t *list, Window window) {
 
     previous = current;
     current = current->next;
-  }
-
-  if (current->x11_window != window) {
-    return;
   }
 
   if (previous != NULL) {

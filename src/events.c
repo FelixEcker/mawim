@@ -25,6 +25,8 @@ void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
 
   mawim_remove_window(&mawim->windows, event.window);
   mawim_update_all_windows(mawim);
+
+  mawim_log(LOG_DEBUG, "DestroyNotify finished!\n");
 }
 
 void handle_reparent_notify(mawim_t *mawim, XEvent event) {
@@ -93,6 +95,7 @@ void handle_enter_notify(mawim_t *mawim, XEnterWindowEvent event) {
 }
 
 bool mawim_handle_event(mawim_t *mawim, XEvent event) {
+  mawim_logf(LOG_DEBUG, "Processing Event: %d\n", event.type);
   switch (event.type) {
   case ButtonPress:
     handle_button_press(mawim, event);
