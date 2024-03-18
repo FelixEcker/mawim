@@ -1,4 +1,9 @@
 #!/bin/bash
 
 echo starting mawim from: $MAWIM_BIN
-exec $MAWIM_BIN
+
+if [[ ! -z "$MAWIM_VALGRIND" ]]; then
+  exec valgrind $MAWIM_VALGRIND_FLAGS $MAWIM_BIN
+else
+  exec $MAWIM_BIN
+fi

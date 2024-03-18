@@ -5,6 +5,8 @@ if argtest --help "$@" || argtest -? "$@"; then
   printf "  --help    -?\tDisplay this help text"
   printf "  --rebuild   \tRebuild mawim before execution"
   printf "  --release   \tUse the release binary"
+  printf "  --gdb       \tAttach gdb after launch"
+  printf "  --valgrind  \tRunn wrapped in valgrind"
   printf
   printf "You can also populate $MARIEBUILD_FLAGS for rebuilding"
   printf "and $MAWIM_FLAGS for mawim flags"
@@ -41,6 +43,13 @@ export MAWIM_BIN
 XEPHYR=$(command -v Xephyr)
 
 echo "==> Running..."
+
+if argtest --valgrind "$@"; then
+  MAWIM_VALGRIND="yes"
+  export MAWIM_VALGRIND
+else
+  unset MAWIM_VALGRIND
+fi
 
 if argtest --gdb "$@"; then
   xinit ./data/xinitrc -- "$XEPHYR" :101 -ac -screen 1920x1080 -host-cursor &
