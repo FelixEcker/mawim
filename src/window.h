@@ -13,6 +13,9 @@
 
 /* window operations */
 
+/**
+ * @brief Create a heap allocated window
+ */
 mawim_window_t *mawim_create_window(Window win, int x, int y, int width,
                                     int height, bool managed);
 
@@ -27,6 +30,9 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window);
 bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
                          XConfigureRequestEvent event);
 
+/**
+ * @brief Update all the windows
+ */
 void mawim_update_all_windows(mawim_t *mawim);
 
 /**

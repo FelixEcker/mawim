@@ -119,6 +119,8 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
     }
   }
 
+  xfree(row_wins);
+
   return true;
 }
 
@@ -268,6 +270,17 @@ void mawim_remove_window(window_list_t *list, Window window) {
     list->first = NULL;
   }
 
+  /* Update Column index for windows on the row */
+  mawim_window_t **row_wins;
+  int wins = mawim_get_wins_on_row(list, current->row, &row_wins);
+
+  for (int i = 0; i < wins; i++) {
+    if (row_wins[i]->col > current->col) {
+      row_wins[i]->col--;
+    }
+  }
+
+  xfree(row_wins);
   xfree(current);
 }
 
