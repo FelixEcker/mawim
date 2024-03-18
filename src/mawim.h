@@ -8,12 +8,7 @@
 #ifndef MAWIM_H
 #define MAWIM_H
 
-#define true True
-#define false False
-#define XNULL 0
-
-typedef int bool;
-
+#include "xbool.h"
 #include "window.h"
 
 #include <X11/Xlib.h>
