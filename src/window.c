@@ -37,7 +37,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   /* Calculate */
   int count = mawim_get_wins_on_row(&mawim->windows, window->row, NULL);
 
-  window->width = DisplayWidth(mawim->display, mawim->default_screen) / count;
+  window->width = DisplayWidth(mawim->display, mawim->default_screen) / max(count, 1);
   window->height = DisplayHeight(mawim->display, mawim->default_screen) /
                    (mawim->active_row + 1);
   window->x = window->width * window->col;
@@ -106,6 +106,16 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
   }
 
   return true;
+}
+
+void mawim_update_all_windows(mawim_t *mawim) {
+  mawim_window_t *current = mawim->windows.first;
+  mawim_update_window(mawim, current);
+
+  while (current->next != NULL) {
+    current = current->next;
+    mawim_update_window(mawim, current);
+  }
 }
 
 void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {

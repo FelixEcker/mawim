@@ -24,6 +24,7 @@ void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
   mawim_logf(LOG_DEBUG, "Got DestroyNotify (window 0x%08x)!\n", event.window);
 
   mawim_remove_window(&mawim->windows, event.window);
+  mawim_update_all_windows(mawim);
 }
 
 void handle_reparent_notify(mawim_t *mawim, XEvent event) {
