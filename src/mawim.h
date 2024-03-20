@@ -13,7 +13,7 @@
 #include <X11/Xlib.h>
 #include <X11/cursorfont.h>
 
-#define MAWIM_VERSION "0.0.0"
+#define MAWIM_VERSION "0.1.0 (develop-test)"
 
 /**
  * @brief flushes x11 events
