@@ -286,8 +286,6 @@ int mawim_window_count(window_list_t *list) {
 }
 
 void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
-  mawim_log(LOG_DEBUG, "APPEND!\n");
-  mawim_logf(LOG_DEBUG, "x11_window = 0x%08x\n", mawim_window->x11_window);
   mawim_window->next = NULL;
 
   if (list->first == NULL) {

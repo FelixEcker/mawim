@@ -69,15 +69,6 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
     mawim_win = window;
   }
 
-  /* Copy over initial configuration */
-  mawim_win->changes.x = event.x;
-  mawim_win->changes.y = event.y;
-  mawim_win->changes.width = event.width;
-  mawim_win->changes.height = event.height;
-  mawim_win->changes.border_width = event.border_width;
-  mawim_win->changes.sibling = event.above;
-  mawim_win->changes.stack_mode = event.detail;
-
   bool manage_result = mawim_manage_window(mawim, mawim_win, event);
   if (manage_result) {
     mawim_log(LOG_DEBUG, "Window is being managed now!\n");
