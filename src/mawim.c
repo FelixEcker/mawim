@@ -37,7 +37,6 @@ void mawim_x11_init(mawim_t *mawim) {
   XSync(mawim->display, false);
 
   /* Input Setup */
-
   int mask = SubstructureRedirectMask | SubstructureNotifyMask |
              EnterWindowMask | LeaveWindowMask;
 

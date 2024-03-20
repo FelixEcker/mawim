@@ -12,6 +12,10 @@
 #define XMEM_LOGGING 1
 #endif
 
+#if !defined(XMEM_LOG_FREES)
+#define XMEM_LOG_FREES 0
+#endif
+
 #include <stddef.h>
 
 void *xmalloc(size_t size);

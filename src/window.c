@@ -56,7 +56,6 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
       window->x, window->y);
 
   /* Apply */
-
   window->changes.x = window->x;
   window->changes.y = window->y;
   window->changes.width = window->width;
@@ -99,8 +98,7 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
 
   mawim_window_t **row_wins;
   int wins = mawim_get_wins_on_row(&mawim->windows, window->row, &row_wins);
-  mawim_logf(LOG_DEBUG, "windows on row %d = %d out of %d\n", window->row, wins,
-             mawim_window_count(&mawim->windows));
+
   if (window->col < 0) {
     window->col = wins - 1;
   }
@@ -109,8 +107,6 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
 
   if (!new_row) {
     for (int i = 0; i < wins; i++) {
-      mawim_logf(LOG_DEBUG, "Update! 0x%08x%s\n", window->x11_window,
-                 row_wins[i]->x11_window == window->x11_window ? " (own)" : "");
       mawim_update_window(mawim, row_wins[i]);
     }
   } else {
@@ -135,6 +131,10 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
   int oldcol = window->col;
 
   window->managed = false;
+
+  /* Set row and col to -1 to avoid counting this window with
+   * mawim_get_wins_on_row().
+   */
   window->row = -1;
   window->col = -1;
 
@@ -143,13 +143,10 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
       mawim_get_wins_on_row(&mawim->windows, oldrow, &row_windows);
 
   if (window_count > 0) {
-    mawim_log(LOG_DEBUG, "window_count > 1\n");
     /* Update Windows on Same Row */
     for (int ix = 0; ix < window_count; ix++) {
       if (row_windows[ix]->col > oldcol) {
         row_windows[ix]->col--;
-        mawim_logf(LOG_DEBUG, "row=%d newcol=%d\n", oldrow,
-                   row_windows[ix]->col);
       }
     }
 
@@ -159,6 +156,8 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
       }
       mawim_update_window(mawim, row_windows[ix]);
     }
+
+    xfree(row_windows);
   } else if (mawim->row_count > 1) {
     /* Move Windows which are a row below up one */
 
@@ -166,14 +165,14 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
 
     if ((mawim->row_count - 1) > oldrow) {
       for (int crow = oldrow + 1; crow < mawim->row_count; crow++) {
-        mawim_logf(LOG_DEBUG, "CROW=%d\n", crow);
         window_count =
             mawim_get_wins_on_row(&mawim->windows, crow, &row_windows);
 
         for (int cwin = 0; cwin < window_count; cwin++) {
-          mawim_logf(LOG_DEBUG, "old row=%d\n", row_windows[cwin]->row);
           row_windows[cwin]->row--;
         }
+
+        xfree(row_windows);
       }
     }
 
@@ -184,14 +183,6 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
     }
 
     mawim_update_all_windows(mawim);
-  }
-
-  mawim_window_t *current = mawim->windows.first;
-  mawim_logf(LOG_DEBUG, "row=%d col=%d\n", current->row, current->col);
-
-  while (current->next != NULL) {
-    current = current->next;
-    mawim_logf(LOG_DEBUG, "row=%d col=%d\n", current->row, current->col);
   }
 }
 

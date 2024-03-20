@@ -43,7 +43,7 @@ void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
     mawim_unmanage_window(mawim, mawim_window);
     mawim_remove_window(mawim, event.window);
   } else {
-    mawim_log(LOG_WARNING, "Nothing to destroy!\n");
+    mawim_log(LOG_DEBUG, "Nothing to destroy!\n");
   }
 
   mawim_log(LOG_DEBUG, "DestroyNotify finished!\n");

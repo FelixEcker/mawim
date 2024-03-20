@@ -9,13 +9,9 @@
 #define TYPES_H
 
 #include <X11/Xlib.h>
+#include <stdbool.h>
 
-#define true True
-#define false False
 #define XNULL 0
-
-/* define or own bool type because we are cool like that */
-typedef int bool;
 
 /* clang-format off */
 

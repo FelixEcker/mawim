@@ -46,7 +46,7 @@ void xfree(void *ptr) {
     return;
   }
 
-#if XMEM_LOGGING
+#if XMEM_LOG_FREES
   mawim_logf(LOG_ERROR, "xfree received NULL\n");
 #endif
 }
