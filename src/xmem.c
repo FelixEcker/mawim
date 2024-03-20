@@ -7,7 +7,7 @@
 
 #include "xmem.h"
 
-#include "mawim.h"
+#include "error.h"
 
 #if XMEM_LOGGING
 #include "logging.h"

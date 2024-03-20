@@ -16,11 +16,6 @@
 #define MAWIM_VERSION "0.0.0"
 
 /**
- * @brief print the message and the exit with EXIT_FAILURE
- */
-void mawim_panic(char *msg);
-
-/**
  * @brief flushes x11 events
  * @see mawim_x11_discarding_flush
  * @see XSync

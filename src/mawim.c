@@ -7,16 +7,13 @@
 
 #include "mawim.h"
 
+#include "error.h"
 #include "events.h"
 #include "logging.h"
 
+#include <X11/Xlib.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-void mawim_panic(char *msg) {
-  fprintf(stderr, "%s", msg);
-  exit(EXIT_FAILURE);
-}
 
 void mawim_x11_flush(mawim_t *mawim) { XSync(mawim->display, false); }
 
@@ -27,6 +24,8 @@ void mawim_x11_init(mawim_t *mawim) {
   if (mawim->display == NULL) {
     mawim_panic("Could not open a X display!\n");
   }
+
+  XSetErrorHandler(mawim_x11_error_handler);
 
   mawim->root = DefaultRootWindow(mawim->display);
   mawim->default_screen = DefaultScreen(mawim->display);
