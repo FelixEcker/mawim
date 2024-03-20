@@ -8,6 +8,7 @@
 #include "window.h"
 
 #include "logging.h"
+#include "types.h"
 #include "xmem.h"
 
 #include <math.h>
@@ -35,7 +36,7 @@ mawim_window_t *mawim_create_window(Window win, int x, int y, int width,
 }
 
 void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
-  if (window == NULL) {
+  if (window == NULL || window->row < 0 || window->col < 0) {
     return;
   }
 
@@ -45,7 +46,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   window->width =
       DisplayWidth(mawim->display, mawim->default_screen) / max(count, 1);
   window->height = DisplayHeight(mawim->display, mawim->default_screen) /
-                   (mawim->active_row + 1);
+                   mawim->row_count;
   window->x = window->width * window->col;
   window->y = window->height * window->row;
 
@@ -88,6 +89,10 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
 
       /* New Row Created */
       new_row = old != window->row;
+
+      if (new_row) {
+        mawim->row_count++;
+      }
     }
   }
 
@@ -124,6 +129,62 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
   return true;
 }
 
+void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
+  int oldrow = window->row;
+  int oldcol = window->col;
+
+  window->managed = false;
+  window->row = -1;
+  window->col = -1;
+
+  mawim_window_t **row_windows;
+  int window_count = mawim_get_wins_on_row(&mawim->windows, oldrow, &row_windows);
+
+  if (window_count > 1) {
+    mawim_log(LOG_DEBUG, "window_count > 1\n");
+    /* Update Windows on Same Row */ 
+    for (int ix = 0; ix < window_count; ix++) {
+      if (row_windows[ix]->col > oldcol) {
+        row_windows[ix]->col--;
+      }
+    }
+
+    for (int ix = 0; ix < window_count; ix++) {
+      if (row_windows[ix]->x11_window == window->x11_window) {
+        continue;
+      }
+      mawim_update_window(mawim, row_windows[ix]);
+    }
+  } else if (mawim->row_count > 1) {
+    /* Move Windows which are a row below up one */
+
+    xfree(row_windows);
+
+    if ((mawim->row_count - 1) > oldrow) {
+      for (int crow = oldrow + 1; crow < mawim->row_count; crow++) {
+        mawim_logf(LOG_DEBUG, "CROW=%d\n", crow);
+        window_count = mawim_get_wins_on_row(&mawim->windows, crow, &row_windows);
+
+        for (int cwin = 0; cwin < window_count; cwin++) {
+          mawim_logf(LOG_DEBUG, "old row=%d\n", row_windows[cwin]->row);
+          row_windows[cwin]->row--;
+        }
+      }
+    }
+
+    mawim->row_count--;
+    mawim_update_all_windows(mawim);
+  }
+
+  mawim_window_t *current = mawim->windows.first;
+  mawim_logf(LOG_DEBUG, "row=%d col=%d\n", current->row, current->col);
+
+  while (current->next != NULL) {
+    current = current->next;
+    mawim_logf(LOG_DEBUG, "row=%d col=%d\n", current->row, current->col); 
+  }
+}
+
 void mawim_update_all_windows(mawim_t *mawim) {
   mawim_log(LOG_DEBUG, "Update ALL Windows!\n");
 
@@ -138,10 +199,6 @@ void mawim_update_all_windows(mawim_t *mawim) {
     current = current->next;
     mawim_update_window(mawim, current);
   }
-}
-
-void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
-  window->managed = false;
 }
 
 /* window list operations */
@@ -273,32 +330,6 @@ void mawim_remove_window(mawim_t *mawim, Window window) {
     mawim->windows.first = current->next;
   }
 
-  /* Update Column index for windows on the row */
-  mawim_window_t **row_wins;
-
-  /* This causes a memory leak; too bad! */
-  int wins = mawim_get_wins_on_row(&mawim->windows, current->row, &row_wins);
-
-  for (int i = 0; i < wins; i++) {
-    if (row_wins[i]->col > current->col) {
-      row_wins[i]->col--;
-    }
-  }
-
-  if (wins <= 0) {
-    mawim_log(LOG_DEBUG, "Moving up 1 row\n");
-    for (int nr = current->row + 1; nr < mawim->max_rows; nr++) {
-      wins = mawim_get_wins_on_row(&mawim->windows, nr, &row_wins);
-
-      for (int i = 0; i < wins; i++) {
-        row_wins[i]->row--;
-      }
-    }
-
-    mawim->active_row = current->row;
-  }
-
-  /* xfree(row_wins); For some Reason row_wins is a stack-address (???) */
   xfree(current);
 }
 

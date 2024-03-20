@@ -62,6 +62,7 @@ int main(void) {
   mawim.max_cols = 2;
   mawim.max_rows = 3;
   mawim.active_row = 0;
+  mawim.row_count = 1;
 
   mawim_x11_init(&mawim);
 

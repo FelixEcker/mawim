@@ -29,16 +29,15 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window);
  */
 bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
                          XConfigureRequestEvent event);
+/**
+ * @brief Stop managing a window
+ */
+void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window);
 
 /**
  * @brief Update all the windows
  */
 void mawim_update_all_windows(mawim_t *mawim);
-
-/**
- * @brief Stop managing a window
- */
-void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window);
 
 /* window list operations */
 

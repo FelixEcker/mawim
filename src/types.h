@@ -33,10 +33,10 @@ typedef struct mawim_window {
   /* X11 */
   Window x11_window;
   XWindowChanges changes;
-  
+
   /* Metadata */
   bool managed;
-  
+
   /* Positioning */
   int x;
   int y;
@@ -45,6 +45,7 @@ typedef struct mawim_window {
 
   int row;
   int col;
+  int cols_on_row;
 } mawim_window_t;
 
 typedef struct mawim {
@@ -60,6 +61,7 @@ typedef struct mawim {
   int max_cols;
   int max_rows;
   int active_row;
+  int row_count;
 } mawim_t;
 
 /* clang-format on */

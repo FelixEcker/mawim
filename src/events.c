@@ -8,7 +8,8 @@
 #include "events.h"
 
 #include "logging.h"
-#include "xmem.h"
+#include "types.h"
+#include "window.h"
 
 const char *event_type_str[37] = {
     (char *)0,        (char *)1,        "KeyPress",         "KeyRelease",
@@ -21,6 +22,7 @@ const char *event_type_str[37] = {
     "PropertyNotify", "SelectionClear", "SelectionRequest", "SelectionNotify",
     "ColormapNotify", "ClientMessage",  "MappingNotify",    "GenericEvent",
     "LASTEvent"};
+
 void handle_button_press(mawim_t *mawim, XEvent event) {
   mawim_log(LOG_DEBUG, "Got ButtonPress!\n");
   XAllowEvents(mawim->display, ReplayPointer, CurrentTime);
@@ -34,8 +36,14 @@ void handle_create_notify(mawim_t *mawim, XCreateWindowEvent event) {
 void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
   mawim_logf(LOG_DEBUG, "Got DestroyNotify (window 0x%08x)!\n", event.window);
 
-  mawim_remove_window(mawim, event.window);
-  mawim_update_all_windows(mawim);
+  mawim_window_t *mawim_window = mawim_find_window(&mawim->windows, event.window);
+
+  if (mawim_window != NULL) {
+    mawim_unmanage_window(mawim, mawim_window);
+    mawim_remove_window(mawim, event.window);
+  } else {
+    mawim_log(LOG_WARNING, "Nothing to destroy!\n");
+  }
 
   mawim_log(LOG_DEBUG, "DestroyNotify finished!\n");
 }
