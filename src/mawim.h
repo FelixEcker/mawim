@@ -9,7 +9,6 @@
 #define MAWIM_H
 
 #include "types.h"
-#include "window.h"
 
 #include <X11/Xlib.h>
 #include <X11/cursorfont.h>
