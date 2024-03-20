@@ -36,7 +36,8 @@ void handle_create_notify(mawim_t *mawim, XCreateWindowEvent event) {
 void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
   mawim_logf(LOG_DEBUG, "Got DestroyNotify (window 0x%08x)!\n", event.window);
 
-  mawim_window_t *mawim_window = mawim_find_window(&mawim->windows, event.window);
+  mawim_window_t *mawim_window =
+      mawim_find_window(&mawim->windows, event.window);
 
   if (mawim_window != NULL) {
     mawim_unmanage_window(mawim, mawim_window);

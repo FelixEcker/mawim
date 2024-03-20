@@ -44,16 +44,16 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
 
   window->width =
       DisplayWidth(mawim->display, mawim->default_screen) / max(count, 1);
-  window->height = DisplayHeight(mawim->display, mawim->default_screen) /
-                   mawim->row_count;
+  window->height =
+      DisplayHeight(mawim->display, mawim->default_screen) / mawim->row_count;
   window->x = window->width * window->col;
   window->y = window->height * window->row;
 
   mawim_logf(
       LOG_DEBUG,
       "New Dimensions: active row %d col %d row %d, size %dx%d, pos %dx%d\n",
-      mawim->row_count, window->col, window->row, window->width,
-      window->height, window->x, window->y);
+      mawim->row_count, window->col, window->row, window->width, window->height,
+      window->x, window->y);
 
   /* Apply */
 
@@ -81,7 +81,8 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
 
   if (window->row < 0) {
     window->row = mawim->active_row;
-    mawim_logf(LOG_DEBUG, "Attempting to manage on current active row %d\n", mawim->active_row);
+    mawim_logf(LOG_DEBUG, "Attempting to manage on current active row %d\n",
+               mawim->active_row);
     if (mawim_get_wins_on_row(&mawim->windows, window->row, NULL) ==
         mawim->max_rows) {
       int old = window->row;
@@ -138,15 +139,17 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
   window->col = -1;
 
   mawim_window_t **row_windows;
-  int window_count = mawim_get_wins_on_row(&mawim->windows, oldrow, &row_windows);
+  int window_count =
+      mawim_get_wins_on_row(&mawim->windows, oldrow, &row_windows);
 
   if (window_count > 0) {
     mawim_log(LOG_DEBUG, "window_count > 1\n");
-    /* Update Windows on Same Row */ 
+    /* Update Windows on Same Row */
     for (int ix = 0; ix < window_count; ix++) {
       if (row_windows[ix]->col > oldcol) {
         row_windows[ix]->col--;
-        mawim_logf(LOG_DEBUG, "row=%d newcol=%d\n", oldrow, row_windows[ix]->col);
+        mawim_logf(LOG_DEBUG, "row=%d newcol=%d\n", oldrow,
+                   row_windows[ix]->col);
       }
     }
 
@@ -164,7 +167,8 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
     if ((mawim->row_count - 1) > oldrow) {
       for (int crow = oldrow + 1; crow < mawim->row_count; crow++) {
         mawim_logf(LOG_DEBUG, "CROW=%d\n", crow);
-        window_count = mawim_get_wins_on_row(&mawim->windows, crow, &row_windows);
+        window_count =
+            mawim_get_wins_on_row(&mawim->windows, crow, &row_windows);
 
         for (int cwin = 0; cwin < window_count; cwin++) {
           mawim_logf(LOG_DEBUG, "old row=%d\n", row_windows[cwin]->row);
@@ -187,7 +191,7 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
 
   while (current->next != NULL) {
     current = current->next;
-    mawim_logf(LOG_DEBUG, "row=%d col=%d\n", current->row, current->col); 
+    mawim_logf(LOG_DEBUG, "row=%d col=%d\n", current->row, current->col);
   }
 }
 
