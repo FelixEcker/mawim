@@ -13,7 +13,7 @@ sector config
     str cc 'clang'
     str cflags '-Iinclude/ -Isrc/ -Wall -Wextra -Wno-unused-parameter -std=c17'
 
-    str ldflags '-lX11 -lm'
+    str ldflags '-lX11'
 
     list str targets 'clean', 'debug', 'release'
     str default 'debug'
