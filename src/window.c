@@ -11,7 +11,6 @@
 #include "types.h"
 #include "xmem.h"
 
-#include <math.h>
 #include <stdlib.h>
 
 int min(int a, int b) { return a < b ? a : b; }
@@ -53,7 +52,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   mawim_logf(
       LOG_DEBUG,
       "New Dimensions: active row %d col %d row %d, size %dx%d, pos %dx%d\n",
-      mawim->active_row + 1, window->col, window->row, window->width,
+      mawim->row_count, window->col, window->row, window->width,
       window->height, window->x, window->y);
 
   /* Apply */
@@ -82,6 +81,7 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
 
   if (window->row < 0) {
     window->row = mawim->active_row;
+    mawim_logf(LOG_DEBUG, "Attempting to manage on current active row %d\n", mawim->active_row);
     if (mawim_get_wins_on_row(&mawim->windows, window->row, NULL) ==
         mawim->max_rows) {
       int old = window->row;
@@ -140,12 +140,13 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
   mawim_window_t **row_windows;
   int window_count = mawim_get_wins_on_row(&mawim->windows, oldrow, &row_windows);
 
-  if (window_count > 1) {
+  if (window_count > 0) {
     mawim_log(LOG_DEBUG, "window_count > 1\n");
     /* Update Windows on Same Row */ 
     for (int ix = 0; ix < window_count; ix++) {
       if (row_windows[ix]->col > oldcol) {
         row_windows[ix]->col--;
+        mawim_logf(LOG_DEBUG, "row=%d newcol=%d\n", oldrow, row_windows[ix]->col);
       }
     }
 
@@ -173,6 +174,11 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
     }
 
     mawim->row_count--;
+
+    if ((mawim->active_row + 1) > mawim->row_count) {
+      mawim->active_row = mawim->row_count - 1;
+    }
+
     mawim_update_all_windows(mawim);
   }
 
