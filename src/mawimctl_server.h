@@ -11,11 +11,19 @@
 
 #include "mawimctl.h"
 
+#include <stdbool.h>
+#include <sys/un.h>
+
+#ifndef MAWIMCTL_SERVER_CONNECTION_BACKLOG_SIZE
+#define MAWIMCTL_SERVER_CONNECTION_BACKLOG_SIZE 20
+#endif
+
 /* clang-format off */
 
 typedef struct mawimctl_server {
-  char *sock_path;
-  int   sockfd;
+  char               *sock_path;
+  struct sockaddr_un  sock_name;
+  int                 sock_fd;
 
   int                 pending_cmd_count;
   mawimctl_command_t *pending_cmds;
@@ -44,11 +52,13 @@ void mawimctl_server_update(mawimctl_server_t *server);
  * @brief Gets the first pending command in the server's queue.
  * @return true if a command was in queue, false if the queue was empty.
  */
-bool mawimctl_server_next_command(mawimctl_server_t *server, mawimctl_command_t *dest_container);
+bool mawimctl_server_next_command(mawimctl_server_t *server,
+                                  mawimctl_command_t *dest_container);
 
 /**
  * @brief Sends a response to the currently connected client.
  */
-bool mawimctl_server_respond(mawimctl_server_t *server, mawimctl_response_t response);
+bool mawimctl_server_respond(mawimctl_server_t *server,
+                             mawimctl_response_t response);
 
 #endif /* #ifndef MAWIMCTL_SERVER_H */
