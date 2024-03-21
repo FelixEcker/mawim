@@ -125,6 +125,7 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
     return;
   }
 
+  /* Receive */
   uint8_t recvbuf[MAWIMCTL_COMMAND_MAXSIZE];
   int bytes_read = read(fd, recvbuf, sizeof(recvbuf));
 
@@ -145,6 +146,7 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
     return;
   }
 
+  /* Copy Received data to command */
   mawimctl_command_t command;
 
   int cpy_offs = 0;
@@ -164,6 +166,22 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
     command.data = xmalloc(to_copy);
     memcpy(command.data, recvbuf + cpy_offs, to_copy);
   }
+
+  /* Enqueue new command */
+  if (server->pending_cmd_count == 0) {
+    if (server->pending_cmds != NULL) {
+      xfree(server->pending_cmds);
+    }
+
+    server->pending_cmds = xmalloc(sizeof(command));
+  } else {
+    server->pending_cmds =
+        xrealloc(server->pending_cmds,
+                 sizeof(command) * (server->pending_cmd_count + 1));
+  }
+
+  server->pending_cmds[server->pending_cmd_count] = command;
+  server->pending_cmd_count++;
 }
 
 void mawimctl_server_update(mawimctl_server_t *server) {
