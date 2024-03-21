@@ -66,13 +66,18 @@ int main(void) {
 
   XEvent event;
   while (true) {
-    XNextEvent(mawim.display, &event);
+    /* Process X11 Events */
+    while (XPending(mawim.display) > 0) {
+      XNextEvent(mawim.display, &event);
 
-    bool handled = mawim_handle_event(&mawim, event);
-    if (!handled) {
-      mawim_logf(LOG_WARNING, "got unexpected event: %s\n",
-                 event_type_str[event.type]);
+      bool handled = mawim_handle_event(&mawim, event);
+      if (!handled) {
+        mawim_logf(LOG_WARNING, "got unexpected event: %s\n",
+                   event_type_str[event.type]);
+      }
     }
+
+    /* Process mawimctl Events */
   }
 
   mawim_x11_shutdown(&mawim);
