@@ -58,7 +58,7 @@ bool mawimctl_server_next_command(mawimctl_server_t *server,
 /**
  * @brief Sends a response to the currently connected client.
  */
-bool mawimctl_server_respond(mawimctl_server_t *server,
+bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd,
                              mawimctl_response_t response);
 
 #endif /* #ifndef MAWIMCTL_SERVER_H */

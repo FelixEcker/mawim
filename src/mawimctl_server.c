@@ -18,6 +18,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+mawimctl_response_t invalid_data_format_response = {
+  .status = MAWIMCTL_INVALID_DATA_FORMAT,
+  .data_length = 0,
+  .data = NULL
+};
+
 void _try_remove_old_sock(char *where) {
   if (access(where, F_OK) != 0) {
     return;
@@ -121,6 +127,43 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
   if (server == NULL) {
     return;
   }
+
+  uint8_t recvbuf[MAWIMCTL_COMMAND_MAXSIZE];
+  int bytes_read = read(fd, recvbuf, sizeof(recvbuf));
+
+  if (bytes_read == -1) {
+    mawim_log(LOG_ERROR, "mawimctl_server: failed to read command!\n");
+    close(fd);
+    return;
+  }
+
+  mawim_logf(LOG_DEBUG, "mawimctl_server: read %d bytes\n", bytes_read);
+
+  if (bytes_read < MAWIMCTL_COMMAND_BASESIZE) {
+    mawim_log(LOG_ERROR, "mawimctl_server: received invalid data format!\n");
+    if (!mawimctl_server_respond(server, fd, invalid_data_format_response)) {
+      mawim_log(LOG_ERROR, "mawimctl_server: failed to send response!\n");
+    }
+    close(fd);
+    return;
+  }
+
+  mawimctl_command_t command;
+
+  int cpy_offs = 0;
+  
+  memcpy(&command.command_identifier, recvbuf, sizeof(command.command_identifier));
+  cpy_offs += sizeof(command.command_identifier);
+
+  memcpy(&command.data_length, recvbuf + cpy_offs, sizeof(command.data_length));
+  cpy_offs += sizeof(command.data_length);
+
+  int to_copy = (bytes_read - MAWIMCTL_COMMAND_BASESIZE) != command.data_length ? (bytes_read - MAWIMCTL_COMMAND_BASESIZE) : command.data_length;
+
+  if (to_copy > 0) {
+    command.data = xmalloc(to_copy);
+    memcpy(command.data, recvbuf + cpy_offs, to_copy);
+  }
 }
 
 void mawimctl_server_update(mawimctl_server_t *server) {
@@ -146,4 +189,35 @@ void mawimctl_server_update(mawimctl_server_t *server) {
     mawim_log(LOG_DEBUG, "mawimctl_server: accepted 1 connection\n");
     _handle_incoming_command(server, newfd);
   }
+}
+
+bool mawimctl_server_next_command(mawimctl_server_t *server,
+                                  mawimctl_command_t *dest_container) {
+  return false;
+}
+
+bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd,
+                             mawimctl_response_t response) {
+  size_t sendbuf_size = MAWIMCTL_RESPONSE_BASESIZE + response.data_length;
+  uint8_t *sendbuf = xmalloc(sendbuf_size);
+
+  /* Copy data to send buffer */
+  int cpyoffs = 0;
+
+  memcpy(sendbuf + cpyoffs, &response.status,
+         sizeof(response.status));
+  cpyoffs += sizeof(response.status);
+
+  if (response.data != NULL) {
+    memcpy(sendbuf + cpyoffs, &response.data_length,
+           sizeof(response.data_length));
+    cpyoffs += sizeof(response.data_length);
+
+    memcpy(sendbuf + cpyoffs, response.data, response.data_length);
+  }
+
+  bool success = write(sockfd, sendbuf, sendbuf_size) != -1;
+
+  xfree(sendbuf);
+  return success;
 }

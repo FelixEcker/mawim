@@ -46,12 +46,16 @@ typedef struct mawimctl_command {
 } mawimctl_command_t;
 
 #define MAWIMCTL_COMMAND_BASESIZE 5
+#define MAWIMCTL_COMMAND_MAXSIZE MAWIMCTL_COMMAND_BASESIZE + UINT16_MAX
 
 typedef struct mawimctl_response {
   uint8_t   status;
   uint16_t  data_length;
   uint8_t  *data;
 } mawimctl_response_t;
+
+#define MAWIMCTL_RESPONSE_BASESIZE 3
+#define MAWIMCTL_RESPONSE_MAXSIZE MAWIMCTL_RESPONSE_BASESIZE + UINT16_MAX
 
 /* clang-format on */
 
