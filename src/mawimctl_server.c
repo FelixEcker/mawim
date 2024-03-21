@@ -19,10 +19,7 @@
 #include <unistd.h>
 
 mawimctl_response_t invalid_data_format_response = {
-  .status = MAWIMCTL_INVALID_DATA_FORMAT,
-  .data_length = 0,
-  .data = NULL
-};
+    .status = MAWIMCTL_INVALID_DATA_FORMAT, .data_length = 0, .data = NULL};
 
 void _try_remove_old_sock(char *where) {
   if (access(where, F_OK) != 0) {
@@ -151,14 +148,17 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
   mawimctl_command_t command;
 
   int cpy_offs = 0;
-  
-  memcpy(&command.command_identifier, recvbuf, sizeof(command.command_identifier));
+
+  memcpy(&command.command_identifier, recvbuf,
+         sizeof(command.command_identifier));
   cpy_offs += sizeof(command.command_identifier);
 
   memcpy(&command.data_length, recvbuf + cpy_offs, sizeof(command.data_length));
   cpy_offs += sizeof(command.data_length);
 
-  int to_copy = (bytes_read - MAWIMCTL_COMMAND_BASESIZE) != command.data_length ? (bytes_read - MAWIMCTL_COMMAND_BASESIZE) : command.data_length;
+  int to_copy = (bytes_read - MAWIMCTL_COMMAND_BASESIZE) != command.data_length
+                    ? (bytes_read - MAWIMCTL_COMMAND_BASESIZE)
+                    : command.data_length;
 
   if (to_copy > 0) {
     command.data = xmalloc(to_copy);
@@ -204,8 +204,7 @@ bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd,
   /* Copy data to send buffer */
   int cpyoffs = 0;
 
-  memcpy(sendbuf + cpyoffs, &response.status,
-         sizeof(response.status));
+  memcpy(sendbuf + cpyoffs, &response.status, sizeof(response.status));
   cpyoffs += sizeof(response.status);
 
   if (response.data != NULL) {
