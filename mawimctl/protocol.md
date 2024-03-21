@@ -23,6 +23,8 @@ Reponses to commands follow this format:
 | 2      | x      | Response Data
 
 ## Commands
+**header file: ** `mawimctl.h`
+
 | Indentifier | Name
 | ----------- | ----
 | 0x00        | MAWIMCTL_GET_VERSION
@@ -61,6 +63,8 @@ The Data Length for this command has to be 1, with the data containing the numbe
 MaWiM may respond with MAWIMCTL_OK, MAWIMCTL_NO_WINDOW_FOCUSED, or MAWIMCTL_NO_SUCH_WORKSPACE.
 
 ## Status
+**header file: ** `mawimctl.h`
+
 | Identifier | Name
 | ---------- | ----
 | 0x00       | MAWIMCTL_OK
@@ -72,7 +76,40 @@ MaWiM may respond with MAWIMCTL_OK, MAWIMCTL_NO_WINDOW_FOCUSED, or MAWIMCTL_NO_S
 | 0x06       | MAWIMCTL_NO_WINDOW_FOCUSED
 
 ## Flags
+**header file: ** `mawimctl.h`
+
 | Bit (left to right) | Description
 | ------------------- | -----------
 | 0                   | When set, disables responses from MaWiM
 | 1-7                 | Unused
+
+## API Reference
+### mawimctl.h
+#### enum mawimctl_cmd_id
+This enumerator represents all commands defined by mawimctl. See the Commands
+chapter for more information.
+
+#### enum mawimctl_status
+This enumerator represents every status with which a mawimctl server can
+respond. See the Status chapter for more information.
+
+#### mawimctl_command_t
+`typedef struct mawimctl_command {...} mawimctl_command_t`
+
+This structure type represents a command. Besides the data specified in the
+Communication chapter, it also has some extra fields.
+
+* `int       sender_fd;` The socket filedescriptor of the sender. Only set Server-side.
+* `uint8_t   command_identifier;` The command identifier (See `enum mawimctl_command`)
+* `uint8_t   flags;` Flags for command execution (See the flags chapter)
+* `uint16_t  data_length;` Length of the command data
+* `uint8_t  *data;` Pointer to the command data
+
+#### mawimctl_response_t
+`typedef struct mawimctl_response {...} mawimctl_response_t`
+
+This structure type represents a server response to a command.
+
+* `uint8_t   status;` The status of the response (See `enum mawimctl_status`)
+* `uint16_t  data_length;` The length of the response data
+* `uint8_t  *data;` Pointer to the command data.
