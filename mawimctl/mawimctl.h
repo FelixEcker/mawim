@@ -13,6 +13,7 @@
 
 /* clang-format off */
 
+#define MAWIMCTL_DEFAULT_SOCK_LOCATION "/tmp/mawim.control.socket"
 #define MAWIMCTL_FLAG_NO_RESPONSE 0b10000000
 
 enum mawimctl_cmd_id {
@@ -35,6 +36,9 @@ enum mawimctl_status {
 };
 
 typedef struct mawimctl_command {
+  int sender_fd;
+
+  /* Data */
   uint8_t   command_identifier;
   uint8_t   flags;
   uint16_t  data_length;
