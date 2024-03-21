@@ -47,7 +47,10 @@ void mawim_x11_init(mawim_t *mawim) {
   mawim_x11_flush(mawim);
 }
 
-void mawim_x11_shutdown(mawim_t *mawim) { XCloseDisplay(mawim->display); }
+void mawim_shutdown(mawim_t *mawim) {
+  XCloseDisplay(mawim->display);
+  mawimctl_server_stop(mawim->mawimctl);
+}
 
 int main(void) {
   mawim_log_level = DEFAULT_LOG_LEVEL;
@@ -86,7 +89,7 @@ int main(void) {
     mawimctl_server_update(mawim.mawimctl);
   }
 
-  mawim_x11_shutdown(&mawim);
+  mawim_shutdown(&mawim);
 
   fprintf(stderr, "MaWiM: Goodbye!\n");
   return 0;

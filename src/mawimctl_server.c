@@ -13,8 +13,36 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <unistd.h>
+
+void _try_remove_old_sock(char *where) {
+  if (access(where, F_OK) != 0) {
+    return;
+  }
+
+  /* attempt to connect to the socket */
+  int sock_fd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
+  if (sock_fd == -1) {
+    return;
+  }
+
+  /* Binding */
+  struct sockaddr_un sock_name;
+
+  memset(&sock_name, 0, sizeof(sock_name));
+  sock_name.sun_family = AF_UNIX;
+  strncpy(sock_name.sun_path, where, sizeof(sock_name.sun_path) - 1);
+
+  int ret =
+      connect(sock_fd, (const struct sockaddr *)&sock_name, sizeof(sock_name));
+
+  if (ret == -1) {
+    remove(where);
+  }
+}
 
 mawimctl_server_t *mawimctl_server_start(char *where) {
   char *errstr;
@@ -22,6 +50,8 @@ mawimctl_server_t *mawimctl_server_start(char *where) {
   if (where == NULL) {
     where = MAWIMCTL_DEFAULT_SOCK_LOCATION;
   }
+
+  _try_remove_old_sock(where);
 
   mawimctl_server_t *server = xmalloc(sizeof(mawimctl_server_t));
   server->sock_path = where;
@@ -74,7 +104,18 @@ mawimctl_server_t *mawimctl_server_start(char *where) {
   return server;
 }
 
-void mawimctl_server_stop(mawimctl_server_t *server) { /* TODO: Implement */ }
+void mawimctl_server_stop(mawimctl_server_t *server) {
+  for (int i = 0; i < server->pending_cmd_count; i++) {
+    close(server->pending_cmds[i].sender_fd);
+  }
+
+  xfree(server->pending_cmds);
+
+  close(server->sock_fd);
+
+  xfree(server);
+  mawim_log(LOG_INFO, "mawimctl_server: stopped.\n");
+}
 
 void _handle_incoming_command(mawimctl_server_t *server, int fd) {
   if (server == NULL) {
