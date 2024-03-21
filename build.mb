@@ -11,7 +11,7 @@ sector config
     str build_type 'incremental'
 
     str cc 'clang'
-    str cflags '-Iinclude/ -Isrc/ -Wall -Wextra -Wno-unused-parameter -std=c17'
+    str cflags '-Iinclude/ -Isrc/ -Imawimctl/ -Wall -Wextra -Wno-unused-parameter -std=c17'
 
     str ldflags '-lX11'
 
