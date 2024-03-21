@@ -45,6 +45,8 @@ typedef struct mawimctl_command {
   uint8_t  *data;
 } mawimctl_command_t;
 
+#define MAWIMCTL_COMMAND_BASESIZE 5
+
 typedef struct mawimctl_response {
   uint8_t   status;
   uint16_t  data_length;

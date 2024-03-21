@@ -34,7 +34,6 @@ mawimctl_server_t *mawimctl_server_start(char *where) {
                "mawimctl_server: error creating server socket: %s "
                "(OS Error %d)\n",
                errstr, errno);
-    xfree(errstr);
     xfree(server);
     return NULL;
   }
@@ -57,7 +56,6 @@ mawimctl_server_t *mawimctl_server_start(char *where) {
                "mawimctl_server: error binding server socket: %s "
                "(OS Error %d)\n",
                errstr, errno);
-    xfree(errstr);
     xfree(server);
     return NULL;
   }
@@ -69,7 +67,6 @@ mawimctl_server_t *mawimctl_server_start(char *where) {
                "mawimctl_server: error listening on server socket: %s "
                "(OS Error %d)\n",
                errstr, errno);
-    xfree(errstr);
     xfree(server);
     return NULL;
   }
@@ -77,9 +74,7 @@ mawimctl_server_t *mawimctl_server_start(char *where) {
   return server;
 }
 
-void mawimctl_server_stop(mawimctl_server_t *server) {
-  /* TODO: Implement */
-}
+void mawimctl_server_stop(mawimctl_server_t *server) { /* TODO: Implement */ }
 
 void _handle_incoming_command(mawimctl_server_t *server, int fd) {
   if (server == NULL) {
@@ -102,11 +97,12 @@ void mawimctl_server_update(mawimctl_server_t *server) {
       char *errstr = strerror(errno);
       mawim_logf(LOG_ERROR,
                  "mawimctl_server: error accepting on server socket: %s "
-                 "(OS Error %d)\n", errstr, errno);
-      xfree(errstr);
+                 "(OS Error %d)\n",
+                 errstr, errno);
       return;
     }
 
+    mawim_log(LOG_DEBUG, "mawimctl_server: accepted 1 connection\n");
     _handle_incoming_command(server, newfd);
   }
 }

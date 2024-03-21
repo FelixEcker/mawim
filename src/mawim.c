@@ -64,6 +64,11 @@ int main(void) {
 
   mawim_x11_init(&mawim);
 
+  mawim.mawimctl = mawimctl_server_start(NULL);
+  if (mawim.mawimctl == NULL) {
+    mawim_panic("Failed to create mawimctl server!\n");
+  }
+
   XEvent event;
   while (true) {
     /* Process X11 Events */
@@ -78,6 +83,7 @@ int main(void) {
     }
 
     /* Process mawimctl Events */
+    mawimctl_server_update(mawim.mawimctl);
   }
 
   mawim_x11_shutdown(&mawim);

@@ -4,18 +4,18 @@ sector config
     str obj 'build/obj/'
     str bindest 'build/'
 
-    list str sources 'xmem', 'logging', 'events', 'error', 'window', 'mawimctl_server', 'mawim'
+    list str sources 'mawimctl_client'
   end
 
   section mariebuild
     str build_type 'incremental'
 
     str cc 'clang'
-    str cflags '-Iinclude/ -Isrc/ -Imawimctl/ -Wall -Wextra -Wno-unused-parameter -std=c17'
+    str cflags '-I. -I../include/ -Wall -Wextra -Wno-unused-parameter -std=c17'
 
-    str ldflags '-lX11'
+    str ldflags ''
 
-    list str targets 'clean', 'debug', 'release', 'mawimctl-debug', 'mawimctl-release'
+    list str targets 'clean', 'debug', 'release'
     str default 'debug'
   end
 end
@@ -49,17 +49,9 @@ mkdir -p $(/config/files/obj)
     str target_cflags '-DDEFAULT_LOG_LEVEL=LOG_INFO'
     str target_bindest '$(/config/files/bindest)release/'
 
-    list str required_targets 'clean', 'mawimctl-release'
+    list str required_targets 'clean'
 
     list str c_rules 'executable'
-  end
-
-  section mawimctl-debug
-    str exec 'cd mawimctl && mb -n -t debug && cd ..'
-  end
-
-  section mawimctl-release
-    str exec 'cd mawimctl && mb -n -t release && cd ..'
   end
 end
 
@@ -67,7 +59,7 @@ sector c_rules
   section executable
     list str c_rules 'main'
 
-    str binname 'mawim'
+    str binname 'mawimctl'
 
     str build_type 'full'
     str exec_mode 'unify'

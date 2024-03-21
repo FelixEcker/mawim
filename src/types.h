@@ -8,6 +8,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include "mawimctl_server.h"
+
 #include <X11/Xlib.h>
 #include <stdbool.h>
 
@@ -52,7 +54,8 @@ typedef struct mawim {
   Cursor   cursor;
 
   /* MaWiM */
-  window_list_t windows;
+  mawimctl_server_t *mawimctl;
+  window_list_t      windows;
 
   int max_cols;
   int max_rows;
