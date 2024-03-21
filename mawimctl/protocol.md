@@ -23,7 +23,7 @@ Reponses to commands follow this format:
 | 2      | x      | Response Data
 
 ## Commands
-**header file: ** `mawimctl.h`
+**header file:** `mawimctl.h`
 
 | Indentifier | Name
 | ----------- | ----
@@ -63,7 +63,7 @@ The Data Length for this command has to be 1, with the data containing the numbe
 MaWiM may respond with MAWIMCTL_OK, MAWIMCTL_NO_WINDOW_FOCUSED, or MAWIMCTL_NO_SUCH_WORKSPACE.
 
 ## Status
-**header file: ** `mawimctl.h`
+**header file:** `mawimctl.h`
 
 | Identifier | Name
 | ---------- | ----
@@ -76,7 +76,7 @@ MaWiM may respond with MAWIMCTL_OK, MAWIMCTL_NO_WINDOW_FOCUSED, or MAWIMCTL_NO_S
 | 0x06       | MAWIMCTL_NO_WINDOW_FOCUSED
 
 ## Flags
-**header file: ** `mawimctl.h`
+**header file:** `mawimctl.h`
 
 | Bit (left to right) | Description
 | ------------------- | -----------
@@ -113,3 +113,15 @@ This structure type represents a server response to a command.
 * `uint8_t   status;` The status of the response (See `enum mawimctl_status`)
 * `uint16_t  data_length;` The length of the response data
 * `uint8_t  *data;` Pointer to the command data.
+
+### mawimctl_server.h
+#### maiwmctl_server_t
+`typedef struct mawimctl_server {...} mawimctl_server_t`
+
+This structure type represents a mawimctl server. 
+
+* `char               *sock_path;` Path to the UNIX Socket
+* `struct sockaddr_un  sock_name;` Internal Socket Name
+* `int                 sock_fd;` File descriptor of the connection socket
+* `int                 pending_cmd_count;` Amount of commands currently pending
+* `mawimctl_command_t *pending_cmds;` Currently pending commands
