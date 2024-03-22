@@ -99,6 +99,34 @@ The default location for the mawimctl socket.
 
 Mask for the NO_RESPONSE flag.
 
+#### MACRO MAWIMCTL_COMMAND_BASESIZE
+```c
+#define MAWIMCTL_COMMAND_BASESIZE 5
+```
+
+Defines the minimum/base size for a command in bytes.
+
+#### MACRO MAWIMCTL_COMMAND_MAXSIZE
+```c
+#define MAWIMCTL_COMMAND_MAXSIZE MAWIMCTL_COMMAND_BASESIZE + UINT16_MAX
+```
+
+Defines the maximum size for a command in bytes.
+
+#### MACRO MAWIMCTL_RESPONSE_BASESIZE
+```c
+#define MAWIMCTL_RESPONSE_BASESIZE 3
+```
+
+Defines the minimum/base size for a response in bytes.
+
+#### MACRO MAWIMCTL_RESPONSE_MAXSIZE
+```c
+#define MAWIMCTL_RESPONSE_MAXSIZE MAWIMCTL_RESPONSE_BASESIZE + UINT16_MAX
+```
+
+Defines the maximum size for a response in bytes.
+
 #### enum mawimctl_cmd_id
 This enumerator represents all commands defined by mawimctl. See the Commands
 chapter for more information.
