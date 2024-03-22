@@ -10,10 +10,15 @@
 #include "error.h"
 #include "events.h"
 #include "logging.h"
+#include "xmem.h"
 
 #include <X11/Xlib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#define __USE_POSIX199309
+#include <time.h>
 
 void mawim_x11_flush(mawim_t *mawim) { XSync(mawim->display, false); }
 
@@ -72,6 +77,10 @@ int main(void) {
     mawim_panic("Failed to create mawimctl server!\n");
   }
 
+  struct timespec sleep_time;
+  sleep_time.tv_nsec = 1000 * 1000 * 100;
+  sleep_time.tv_sec = 0;
+
   XEvent event;
   while (true) {
     /* Process X11 Events */
@@ -87,6 +96,33 @@ int main(void) {
 
     /* Process mawimctl Events */
     mawimctl_server_update(mawim.mawimctl);
+
+    mawimctl_command_t cmd;
+    while (mawimctl_server_next_command(mawim.mawimctl, &cmd)) {
+      mawim_logf(LOG_DEBUG, "Handling mawimctl command %d\n", cmd.command_identifier);
+
+      mawimctl_response_t resp = mawimctl_generic_ok_response;
+      switch (cmd.command_identifier) {
+      case MAWIMCTL_GET_VERSION:
+        resp.data_length = sizeof(MAWIM_VERSION) + 1;
+        resp.data = xmalloc(sizeof(MAWIM_VERSION));
+        memcpy((char*) resp.data, MAWIM_VERSION, sizeof(MAWIM_VERSION));
+
+        mawim_logf(LOG_DEBUG, "data len = %d\n", sizeof(MAWIM_VERSION) + 1);
+        break;
+      }
+
+      bool resp_succ = mawimctl_server_respond(mawim.mawimctl, cmd.sender_fd, resp);
+      if (!resp_succ) {
+        mawim_logf(LOG_ERROR, "Failed to send response to mawimctl command!\n");
+      }
+
+      if (resp.data != NULL) {
+        xfree(resp.data);
+      }
+    }
+
+    nanosleep(&sleep_time, NULL);
   }
 
   mawim_shutdown(&mawim);

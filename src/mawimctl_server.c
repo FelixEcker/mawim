@@ -18,11 +18,14 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-mawimctl_response_t invalid_data_format_response = {
+mawimctl_response_t mawimctl_invalid_data_format_response = {
     .status = MAWIMCTL_INVALID_DATA_FORMAT, .data_length = 0, .data = NULL};
 
-mawimctl_response_t invalid_command_response = {
+mawimctl_response_t mawimctl_invalid_command_response = {
     .status = MAWIMCTL_INVALID_COMMAND, .data_length = 0, .data = NULL};
+
+mawimctl_response_t mawimctl_generic_ok_response = {
+    .status = MAWIMCTL_OK, .data_length = 0, .data = NULL};
 
 void _try_remove_old_sock(char *where) {
   if (access(where, F_OK) != 0) {
@@ -184,7 +187,7 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
 
   if (bytes_read < MAWIMCTL_COMMAND_BASESIZE) {
     mawim_log(LOG_ERROR, "mawimctl_server: received invalid data format!\n");
-    if (!mawimctl_server_respond(server, fd, invalid_data_format_response)) {
+    if (!mawimctl_server_respond(server, fd, mawimctl_invalid_data_format_response)) {
       mawim_log(LOG_ERROR, "mawimctl_server: failed to send response!\n");
     }
     close(fd);
@@ -192,11 +195,12 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
   }
 
   mawimctl_command_t command = _parse_command(recvbuf, bytes_read);
+  command.sender_fd = fd;
 
   /* Handle invalid command */
   if (command.command_identifier >= MAWIMCTL_CMD_INVALID) {
     mawim_log(LOG_ERROR, "mawimctl_server: received invalid command!\n");
-    if (!mawimctl_server_respond(server, fd, invalid_command_response)) {
+    if (!mawimctl_server_respond(server, fd, mawimctl_invalid_command_response)) {
       mawim_log(LOG_ERROR, "mawimctl_server: failed to send response!\n");
     }
     close(fd);
@@ -242,6 +246,7 @@ bool mawimctl_server_next_command(mawimctl_server_t *server,
 
   if (server->pending_cmd_count == 0) {
     xfree(server->pending_cmds);
+    server->pending_cmds = NULL;
     return true;
   }
 
@@ -276,8 +281,17 @@ bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd,
     memcpy(sendbuf + cpyoffs, response.data, response.data_length);
   }
 
-  bool success = write(sockfd, sendbuf, sendbuf_size) != -1;
+  int ret = write(sockfd, sendbuf, sendbuf_size);
+
+  if (ret == -1) {
+    char *errstr = strerror(errno);
+    mawim_logf(LOG_ERROR, "mawimctl_server: %s (OS Error %d)\n",
+    errstr, errno);
+  } else {
+    mawim_logf(LOG_DEBUG, "mawimctl_server: sent %d out of %d bytes!\n",
+                          ret, sendbuf_size);
+  }
 
   xfree(sendbuf);
-  return success;
+  return true;
 }
