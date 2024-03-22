@@ -87,13 +87,59 @@ bool mawimctl_client_send_command(mawimctl_connection_t *connection,
   return success;
 }
 
-int mawimctl_read_response(mawimctl_connection_t *connection,
-                           mawimctl_response_t *dest) {}
+mawimctl_response_t _parse_response(uint8_t *buff, int buffsize) {
+  mawimctl_response_t ret = {
+      .status = MAWIMCTL_STATUS_INVALID, .data_length = 0, .data = NULL};
+
+  if (buffsize < MAWIMCTL_RESPONSE_BASESIZE) {
+    return ret;
+  }
+
+  int cpyoffs = 0;
+  memcpy(&ret.status, buff + cpyoffs, sizeof(ret.status));
+  cpyoffs += sizeof(ret.status);
+
+  memcpy(&ret.data_length, buff + cpyoffs, sizeof(ret.data_length));
+  cpyoffs += sizeof(ret.data_length);
+
+  int to_copy = ret.data_length > (buffsize - MAWIMCTL_COMMAND_BASESIZE)
+                  ? (buffsize - MAWIMCTL_COMMAND_BASESIZE)
+                  : ret.data_length;
+
+  if (to_copy > 0) {
+    ret.data = malloc(to_copy);
+    memcpy(ret.data, buff + cpyoffs, to_copy);
+  }
+
+  return ret;
+}
+
+bool mawimctl_read_response(mawimctl_connection_t *connection,
+                           mawimctl_response_t *dest) {
+  if (connection == NULL || dest == NULL) {
+    return false;
+  }
+
+  uint8_t recvbuf[MAWIMCTL_COMMAND_MAXSIZE];
+  int bytes_read = read(connection->sock_fd, recvbuf, sizeof(recvbuf));
+
+  if (bytes_read == -1) {
+    fprintf(stderr, "failed to read response!\n");
+    close(connection->sock_fd);
+    return false;
+  }
+
+  fprintf(stderr, "read %d bytes!\n", bytes_read);
+
+  *dest = _parse_response(recvbuf, bytes_read);
+
+  return true;
+}
 
 int main(void) {
   mawimctl_connection_t *connection = mawimctl_client_connect(NULL);
   if (connection == NULL) {
-    return 1;
+    return false;
   }
 
   int ret = 0;
@@ -108,6 +154,14 @@ int main(void) {
     ret = 1;
     goto exit;
   }
+
+  mawimctl_response_t resp;
+  if (!mawimctl_read_response(connection, &resp)) {
+    ret = 1;
+    goto exit;
+  }
+
+  printf("mawim version (%d bytes): %s\n", resp.data_length, (char*) resp.data);
 
 exit:
   free(connection);

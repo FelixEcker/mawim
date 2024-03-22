@@ -36,6 +36,9 @@ enum mawimctl_status {
   MAWIMCTL_CONFIG_MISSING,
   MAWIMCTL_CONFIG_MALFORMED,
   MAWIMCTL_NO_WINDOW_FOCUSED,
+
+  /* Has to be last value */
+  MAWIMCTL_STATUS_INVALID,
 };
 
 typedef struct mawimctl_command {

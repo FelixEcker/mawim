@@ -38,9 +38,9 @@ bool mawimctl_client_send_command(mawimctl_connection_t *connection,
 
 /**
  * @brief Read a response from the mawimctl server into dest
- * @return 0 on success, -1 on failure.
+ * @return success
  */
-int mawimctl_read_response(mawimctl_connection_t *connection,
+bool mawimctl_read_response(mawimctl_connection_t *connection,
                            mawimctl_response_t *dest);
 
 #endif /* #ifndef MAWIMCTL_CLIENT_H */
