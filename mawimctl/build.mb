@@ -1,8 +1,8 @@
 sector config
   section files
     str src 'src/'
-    str obj 'build/obj/'
-    str bindest 'build/'
+    str obj '../build/obj/'
+    str bindest '../build/'
 
     list str sources 'mawimctl_client'
   end

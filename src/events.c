@@ -8,6 +8,7 @@
 #include "events.h"
 
 #include "logging.h"
+#include "mawim.h"
 #include "types.h"
 #include "window.h"
 

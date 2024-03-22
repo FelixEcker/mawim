@@ -50,6 +50,9 @@ void _try_remove_old_sock(char *where) {
 
   if (ret == -1) {
     remove(where);
+  } else {
+    mawim_logf(LOG_WARNING, "could'nt remove existing socket at \"%s\"\n",
+               where);
   }
 }
 
@@ -187,7 +190,8 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
 
   if (bytes_read < MAWIMCTL_COMMAND_BASESIZE) {
     mawim_log(LOG_ERROR, "mawimctl_server: received invalid data format!\n");
-    if (!mawimctl_server_respond(server, fd, mawimctl_invalid_data_format_response)) {
+    if (!mawimctl_server_respond(server, fd,
+                                 mawimctl_invalid_data_format_response)) {
       mawim_log(LOG_ERROR, "mawimctl_server: failed to send response!\n");
     }
     close(fd);
@@ -200,7 +204,8 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
   /* Handle invalid command */
   if (command.command_identifier >= MAWIMCTL_CMD_INVALID) {
     mawim_log(LOG_ERROR, "mawimctl_server: received invalid command!\n");
-    if (!mawimctl_server_respond(server, fd, mawimctl_invalid_command_response)) {
+    if (!mawimctl_server_respond(server, fd,
+                                 mawimctl_invalid_command_response)) {
       mawim_log(LOG_ERROR, "mawimctl_server: failed to send response!\n");
     }
     close(fd);
@@ -285,11 +290,10 @@ bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd,
 
   if (ret == -1) {
     char *errstr = strerror(errno);
-    mawim_logf(LOG_ERROR, "mawimctl_server: %s (OS Error %d)\n",
-    errstr, errno);
+    mawim_logf(LOG_ERROR, "mawimctl_server: %s (OS Error %d)\n", errstr, errno);
   } else {
-    mawim_logf(LOG_DEBUG, "mawimctl_server: sent %d out of %d bytes!\n",
-                          ret, sendbuf_size);
+    mawim_logf(LOG_DEBUG, "mawimctl_server: sent %d out of %d bytes!\n", ret,
+               sendbuf_size);
   }
 
   xfree(sendbuf);

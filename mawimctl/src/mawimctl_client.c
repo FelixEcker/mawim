@@ -103,8 +103,8 @@ mawimctl_response_t _parse_response(uint8_t *buff, int buffsize) {
   cpyoffs += sizeof(ret.data_length);
 
   int to_copy = ret.data_length > (buffsize - MAWIMCTL_COMMAND_BASESIZE)
-                  ? (buffsize - MAWIMCTL_COMMAND_BASESIZE)
-                  : ret.data_length;
+                    ? (buffsize - MAWIMCTL_COMMAND_BASESIZE)
+                    : ret.data_length;
 
   if (to_copy > 0) {
     ret.data = malloc(to_copy);
@@ -115,7 +115,7 @@ mawimctl_response_t _parse_response(uint8_t *buff, int buffsize) {
 }
 
 bool mawimctl_read_response(mawimctl_connection_t *connection,
-                           mawimctl_response_t *dest) {
+                            mawimctl_response_t *dest) {
   if (connection == NULL || dest == NULL) {
     return false;
   }
@@ -161,7 +161,7 @@ int main(void) {
     goto exit;
   }
 
-  printf("mawim version (%d bytes): %s\n", resp.data_length, (char*) resp.data);
+  printf("mawim version (%d bytes): %s\n", resp.data_length, (char *)resp.data);
 
 exit:
   free(connection);

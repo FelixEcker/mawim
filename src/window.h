@@ -8,7 +8,6 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "mawim.h"
 #include "types.h"
 
 /* window operations */

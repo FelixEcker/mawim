@@ -99,20 +99,23 @@ int main(void) {
 
     mawimctl_command_t cmd;
     while (mawimctl_server_next_command(mawim.mawimctl, &cmd)) {
-      mawim_logf(LOG_DEBUG, "Handling mawimctl command %d\n", cmd.command_identifier);
+      mawim_logf(LOG_DEBUG, "Handling mawimctl command %d\n",
+                 cmd.command_identifier);
 
+      /* TODO: Move actual command handling somewhere else */
       mawimctl_response_t resp = mawimctl_generic_ok_response;
       switch (cmd.command_identifier) {
       case MAWIMCTL_GET_VERSION:
         resp.data_length = sizeof(MAWIM_VERSION) + 1;
         resp.data = xmalloc(sizeof(MAWIM_VERSION));
-        memcpy((char*) resp.data, MAWIM_VERSION, sizeof(MAWIM_VERSION));
+        memcpy((char *)resp.data, MAWIM_VERSION, sizeof(MAWIM_VERSION));
 
         mawim_logf(LOG_DEBUG, "data len = %d\n", sizeof(MAWIM_VERSION) + 1);
         break;
       }
 
-      bool resp_succ = mawimctl_server_respond(mawim.mawimctl, cmd.sender_fd, resp);
+      bool resp_succ =
+          mawimctl_server_respond(mawim.mawimctl, cmd.sender_fd, resp);
       if (!resp_succ) {
         mawim_logf(LOG_ERROR, "Failed to send response to mawimctl command!\n");
       }

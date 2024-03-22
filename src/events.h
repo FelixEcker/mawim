@@ -8,7 +8,7 @@
 #ifndef MAWIM_EVENTS_H
 #define MAWIM_EVENTS_H
 
-#include "mawim.h"
+#include "types.h"
 
 extern const char *event_type_str[];
 

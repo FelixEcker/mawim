@@ -1,0 +1,7 @@
+-Iinclude/
+-Isrc/
+-Imawimctl/
+-Wall
+-Wextra
+-Wno-unused-parameter
+-std=c17

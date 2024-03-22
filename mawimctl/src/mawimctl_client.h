@@ -41,6 +41,6 @@ bool mawimctl_client_send_command(mawimctl_connection_t *connection,
  * @return success
  */
 bool mawimctl_read_response(mawimctl_connection_t *connection,
-                           mawimctl_response_t *dest);
+                            mawimctl_response_t *dest);
 
 #endif /* #ifndef MAWIMCTL_CLIENT_H */
