@@ -132,7 +132,8 @@ mawimctl_command_t _parse_command(uint8_t *raw_buffer, int buffer_size) {
          sizeof(command.command_identifier));
   cpy_offs += sizeof(command.command_identifier);
 
-  memcpy(&command.data_length, raw_buffer + cpy_offs, sizeof(command.data_length));
+  memcpy(&command.data_length, raw_buffer + cpy_offs,
+         sizeof(command.data_length));
   cpy_offs += sizeof(command.data_length);
 
   int to_copy = (buffer_size - MAWIMCTL_COMMAND_BASESIZE) != command.data_length
@@ -249,7 +250,9 @@ bool mawimctl_server_next_command(mawimctl_server_t *server,
     server->pending_cmds[wix] = server->pending_cmds[wix + 1];
   }
 
-  server->pending_cmds = xrealloc(server->pending_cmds, sizeof(mawimctl_command_t) * server->pending_cmd_count);
+  server->pending_cmds =
+      xrealloc(server->pending_cmds,
+               sizeof(mawimctl_command_t) * server->pending_cmd_count);
 
   return true;
 }
