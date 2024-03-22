@@ -232,7 +232,26 @@ void mawimctl_server_update(mawimctl_server_t *server) {
 
 bool mawimctl_server_next_command(mawimctl_server_t *server,
                                   mawimctl_command_t *dest_container) {
-  return false;
+  if (server == NULL || server->pending_cmd_count == 0) {
+    return false;
+  }
+
+  *dest_container = server->pending_cmds[0];
+  server->pending_cmd_count--;
+
+  if (server->pending_cmd_count == 0) {
+    xfree(server->pending_cmds);
+    return true;
+  }
+
+  /* Move every queued command up 1 slot */
+  for (int wix = 0; wix < server->pending_cmd_count; wix++) {
+    server->pending_cmds[wix] = server->pending_cmds[wix + 1];
+  }
+
+  server->pending_cmds = xrealloc(server->pending_cmds, sizeof(mawimctl_command_t) * server->pending_cmd_count);
+
+  return true;
 }
 
 bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd,
