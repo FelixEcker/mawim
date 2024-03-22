@@ -23,6 +23,9 @@ enum mawimctl_cmd_id {
   MAWIMCTL_RELOAD,
   MAWIMCTL_CLOSE_FOCUSED,
   MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE,
+
+  /* Has to be last value */
+  MAWIMCTL_CMD_INVALID,
 };
 
 enum mawimctl_status {

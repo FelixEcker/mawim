@@ -21,6 +21,9 @@
 mawimctl_response_t invalid_data_format_response = {
     .status = MAWIMCTL_INVALID_DATA_FORMAT, .data_length = 0, .data = NULL};
 
+mawimctl_response_t invalid_command_response = {
+    .status = MAWIMCTL_INVALID_COMMAND, .data_length = 0, .data = NULL};
+
 void _try_remove_old_sock(char *where) {
   if (access(where, F_OK) != 0) {
     return;
@@ -120,6 +123,47 @@ void mawimctl_server_stop(mawimctl_server_t *server) {
   mawim_log(LOG_INFO, "mawimctl_server: stopped.\n");
 }
 
+mawimctl_command_t _parse_command(uint8_t *raw_buffer, int buffer_size) {
+  mawimctl_command_t command;
+
+  int cpy_offs = 0;
+
+  memcpy(&command.command_identifier, raw_buffer,
+         sizeof(command.command_identifier));
+  cpy_offs += sizeof(command.command_identifier);
+
+  memcpy(&command.data_length, raw_buffer + cpy_offs, sizeof(command.data_length));
+  cpy_offs += sizeof(command.data_length);
+
+  int to_copy = (buffer_size - MAWIMCTL_COMMAND_BASESIZE) != command.data_length
+                    ? (buffer_size - MAWIMCTL_COMMAND_BASESIZE)
+                    : command.data_length;
+
+  if (to_copy > 0) {
+    command.data = xmalloc(to_copy);
+    memcpy(command.data, raw_buffer + cpy_offs, to_copy);
+  }
+
+  return command;
+}
+
+void _queue_command(mawimctl_server_t *server, mawimctl_command_t command) {
+  if (server->pending_cmd_count == 0) {
+    if (server->pending_cmds != NULL) {
+      xfree(server->pending_cmds);
+    }
+
+    server->pending_cmds = xmalloc(sizeof(command));
+  } else {
+    server->pending_cmds =
+        xrealloc(server->pending_cmds,
+                 sizeof(command) * (server->pending_cmd_count + 1));
+  }
+
+  server->pending_cmds[server->pending_cmd_count] = command;
+  server->pending_cmd_count++;
+}
+
 void _handle_incoming_command(mawimctl_server_t *server, int fd) {
   if (server == NULL) {
     return;
@@ -146,42 +190,19 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
     return;
   }
 
-  /* Copy Received data to command */
-  mawimctl_command_t command;
+  mawimctl_command_t command = _parse_command(recvbuf, bytes_read);
 
-  int cpy_offs = 0;
-
-  memcpy(&command.command_identifier, recvbuf,
-         sizeof(command.command_identifier));
-  cpy_offs += sizeof(command.command_identifier);
-
-  memcpy(&command.data_length, recvbuf + cpy_offs, sizeof(command.data_length));
-  cpy_offs += sizeof(command.data_length);
-
-  int to_copy = (bytes_read - MAWIMCTL_COMMAND_BASESIZE) != command.data_length
-                    ? (bytes_read - MAWIMCTL_COMMAND_BASESIZE)
-                    : command.data_length;
-
-  if (to_copy > 0) {
-    command.data = xmalloc(to_copy);
-    memcpy(command.data, recvbuf + cpy_offs, to_copy);
-  }
-
-  /* Enqueue new command */
-  if (server->pending_cmd_count == 0) {
-    if (server->pending_cmds != NULL) {
-      xfree(server->pending_cmds);
+  /* Handle invalid command */
+  if (command.command_identifier >= MAWIMCTL_CMD_INVALID) {
+    mawim_log(LOG_ERROR, "mawimctl_server: received invalid command!\n");
+    if (!mawimctl_server_respond(server, fd, invalid_command_response)) {
+      mawim_log(LOG_ERROR, "mawimctl_server: failed to send response!\n");
     }
-
-    server->pending_cmds = xmalloc(sizeof(command));
-  } else {
-    server->pending_cmds =
-        xrealloc(server->pending_cmds,
-                 sizeof(command) * (server->pending_cmd_count + 1));
+    close(fd);
+    return;
   }
 
-  server->pending_cmds[server->pending_cmd_count] = command;
-  server->pending_cmd_count++;
+  _queue_command(server, command);
 }
 
 void mawimctl_server_update(mawimctl_server_t *server) {
