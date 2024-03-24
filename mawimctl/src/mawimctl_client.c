@@ -1,3 +1,11 @@
+/* mawimctl_client.c ; implementation for mawimctl client-side communication.
+ * See github.com/FelixEcker/mawim.git -> mawimctl/protocol.md
+ *
+ * Copyright (c) 2024, Marie Eckert
+ * Licensed under the BSD 3-Clause License; See the LICENSE file for further
+ * information.
+ */
+
 #include "mawimctl_client.h"
 
 #include <errno.h>

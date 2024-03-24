@@ -1,3 +1,10 @@
+/* main.c ; main file for the mawimctl client.
+ *
+ * Copyright (c) 2024, Marie Eckert
+ * Licensed under the BSD 3-Clause License; See the LICENSE file for further
+ * information.
+ */
+
 #include "mawimctl_client.h"
 
 #include <stdio.h>
