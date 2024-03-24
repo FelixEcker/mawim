@@ -43,6 +43,18 @@ void panic(char *msg) {
 
 /* clang-format on */
 
+/* command handlers */
+
+int do_close_focused(mawimctl_connection_t *connection, int argc, char **argv) {
+  mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_CLOSE_FOCUSED,
+                            .flags = 0,
+                            .data_length = 0,
+                            .data = NULL};
+  mawimctl_response_t resp;
+  do_cmd(connection, cmd, resp);
+  return 0;
+}
+
 int get_version(mawimctl_connection_t *connection, int argc, char **argv) {
   mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_GET_VERSION,
                             .flags = 0,
@@ -56,6 +68,50 @@ int get_version(mawimctl_connection_t *connection, int argc, char **argv) {
   return 0;
 }
 
+int get_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
+  mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_GET_WORKSPACE,
+                            .flags = 0,
+                            .data_length = 0,
+                            .data = NULL};
+  mawimctl_response_t resp;
+  do_cmd(connection, cmd, resp);
+
+  if (resp.data == NULL) {
+    panic("response data is NULL!");
+  }
+
+  fprintf(stdout, "%d\n", (uint8_t)*resp.data);
+
+  return 0;
+}
+
+int do_move_focused_to_workspace(mawimctl_connection_t *connection, int argc,
+                                 char **argv) {
+  panic("not implemented");
+  /*
+  mawimctl_command_t cmd = {.command_identifier =
+  MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE, .flags = 0, .data_length = 0, .data =
+  NULL}; mawimctl_response_t resp; do_cmd(connection, cmd, resp);
+
+  return 0;
+  */
+}
+
+int do_reload(mawimctl_connection_t *connection, int argc, char **argv) {
+  mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_RELOAD,
+                            .flags = 0,
+                            .data_length = 0,
+                            .data = NULL};
+  mawimctl_response_t resp;
+  do_cmd(connection, cmd, resp);
+
+  return 0;
+}
+
+int set_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
+  panic("not implemented");
+}
+
 struct handler {
   char *cmd_name;
   char *params_str; /* used for help output */
@@ -63,16 +119,18 @@ struct handler {
 };
 
 const struct handler cmd_handlers[] = {
-    {.cmd_name = "close_focused", .params_str = "", .handler = NULL},
+    {.cmd_name = "close_focused",
+     .params_str = "",
+     .handler = &do_close_focused},
     {.cmd_name = "get_version", .params_str = "", .handler = &get_version},
-    {.cmd_name = "get_workspace", .params_str = "", .handler = NULL},
+    {.cmd_name = "get_workspace", .params_str = "", .handler = &get_workspace},
     {.cmd_name = "move_focused_to_workspace",
      .params_str = "<workspace number>",
-     .handler = NULL},
-    {.cmd_name = "reload", .params_str = "", .handler = NULL},
+     .handler = &do_move_focused_to_workspace},
+    {.cmd_name = "reload", .params_str = "", .handler = &do_reload},
     {.cmd_name = "set_workspace",
      .params_str = "<workspace number>",
-     .handler = NULL},
+     .handler = &set_workspace},
 };
 
 const int cmd_handlers_count = sizeof(cmd_handlers) / sizeof(struct handler);
@@ -101,7 +159,8 @@ int main(int argc, char **argv) {
         macro_connection_null_panic();
       }
 
-      ret = cmd_handlers[i].handler(connection, argc, argv);
+      ret = cmd_handlers[i].handler(connection, argc - 2,
+                                    argv + (sizeof(*argv) * 2));
       free(connection);
       break;
     }
