@@ -89,7 +89,7 @@ int get_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
     panic("response data is NULL!");
   }
 
-  fprintf(stdout, "%d\n", (uint8_t)*resp.data);
+  fprintf(stdout, "%d\n", (mawimctl_workspaceid_t)*resp.data);
 
   return 0;
 }
@@ -103,7 +103,7 @@ int do_move_focused_to_workspace(mawimctl_connection_t *connection, int argc,
     return 1;
   }
 
-  uint8_t wanted_workspace = atoi(argv[0]);
+  mawimctl_workspaceid_t wanted_workspace = atoi(argv[0]);
 
   mawimctl_command_t cmd = {.command_identifier =
                                 MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE,
@@ -133,7 +133,7 @@ int set_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
     return 1;
   }
 
-  uint8_t wanted_workspace = atoi(argv[0]);
+  mawimctl_workspaceid_t wanted_workspace = atoi(argv[0]);
 
   mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_SET_WORKSPACE,
                             .flags = 0,

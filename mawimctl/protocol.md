@@ -130,6 +130,13 @@ Defines the minimum/base size for a response in bytes.
 
 Defines the maximum size for a response in bytes.
 
+#### typealias mawimctl_workspaceid_t
+```c
+typedef uint8_t mawimctl_workspaceid_t
+```
+
+This typealias is used for identifying workspaces in MaWiM and mawimctl.
+
 #### enum mawimctl_cmd_id
 This enumerator represents all commands defined by mawimctl. See the Commands
 chapter for more information.

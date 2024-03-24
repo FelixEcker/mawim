@@ -64,6 +64,8 @@ typedef struct mawimctl_response {
 #define MAWIMCTL_RESPONSE_BASESIZE 3
 #define MAWIMCTL_RESPONSE_MAXSIZE MAWIMCTL_RESPONSE_BASESIZE + UINT16_MAX
 
+typedef uint8_t mawimctl_workspaceid_t;
+
 /* clang-format on */
 
 #endif /* #ifndef MAWIMCTL_H */
