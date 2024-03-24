@@ -4,7 +4,7 @@ sector config
     str obj 'build/obj/'
     str bindest 'build/'
 
-    list str sources 'xmem', 'logging', 'events', 'error', 'window', 'mawimctl_server', 'mawim'
+    list str sources 'xmem', 'logging', 'events', 'error', 'window', 'mawimctl_server', 'commands', 'mawim'
   end
 
   section mariebuild
