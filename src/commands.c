@@ -40,6 +40,21 @@ mawimctl_response_t handle_set_workspace(mawim_t *mawim,
   return resp;
 }
 
+mawimctl_response_t handle_close_focused(mawim_t *mawim,
+                                         mawimctl_command_t cmd) {
+  mawimctl_response_t resp = mawimctl_generic_ok_response;
+
+  if (mawim->focused_window == NULL) {
+    resp.status = MAWIMCTL_NO_WINDOW_FOCUSED;
+    mawim_log(LOG_ERROR, "handle_close_focused: no window focused!\n");
+    return resp;
+  }
+
+  XDestroyWindow(mawim->display, mawim->focused_window->x11_window);
+
+  return resp;
+}
+
 bool mawim_handle_ctl_command(mawim_t *mawim, mawimctl_command_t cmd) {
   mawimctl_response_t resp = mawimctl_generic_ok_response;
 
@@ -56,6 +71,9 @@ bool mawim_handle_ctl_command(mawim_t *mawim, mawimctl_command_t cmd) {
     break;
   case MAWIMCTL_SET_WORKSPACE:
     resp = handle_set_workspace(mawim, cmd);
+    break;
+  case MAWIMCTL_CLOSE_FOCUSED:
+    resp = handle_close_focused(mawim, cmd);
     break;
   default:
     return false;
