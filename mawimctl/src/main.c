@@ -94,14 +94,29 @@ int get_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
 
 int do_move_focused_to_workspace(mawimctl_connection_t *connection, int argc,
                                  char **argv) {
-  panic("not implemented");
-  /*
+  if (argc < 1) {
+    fprintf(stderr, "move_focused_to_workspace expects 1 argument: workspace number!\n");
+    return 1;
+  }
+
+  uint8_t wanted_workspace = atoi(argv[0]);
+
   mawimctl_command_t cmd = {.command_identifier =
-  MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE, .flags = 0, .data_length = 0, .data =
-  NULL}; mawimctl_response_t resp; do_cmd(connection, cmd, resp);
+                                MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE,
+                            .flags = 0,
+                            .data_length = sizeof(wanted_workspace),
+                            .data = malloc(sizeof(wanted_workspace))};
+
+  if (cmd.data == NULL) {
+    panic("unable to allocate data for command!\n");
+  }
+
+  memcpy(cmd.data, &wanted_workspace, sizeof(wanted_workspace));
+
+  mawimctl_response_t resp;
+  do_cmd(connection, cmd, resp);
 
   return 0;
-  */
 }
 
 int do_reload(mawimctl_connection_t *connection, int argc, char **argv) {
@@ -116,7 +131,31 @@ int do_reload(mawimctl_connection_t *connection, int argc, char **argv) {
 }
 
 int set_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
-  panic("not implemented");
+  if (argc < 1) {
+    fprintf(stderr, "set_workspace expects 1 argument: workspace number!\n");
+    return 1;
+  }
+
+  uint8_t wanted_workspace = atoi(argv[0]);
+
+  mawimctl_command_t cmd = {.command_identifier =
+                                MAWIMCTL_SET_WORKSPACE,
+                            .flags = 0,
+                            .data_length = sizeof(wanted_workspace),
+                            .data = malloc(sizeof(wanted_workspace))};
+
+  if (cmd.data == NULL) {
+    panic("unable to allocate data for command!\n");
+  }
+
+  printf("datalength = %d\n", cmd.data_length);
+
+  memcpy(cmd.data, &wanted_workspace, sizeof(wanted_workspace));
+
+  mawimctl_response_t resp;
+  do_cmd(connection, cmd, resp);
+
+  return 0;
 }
 
 struct handler {
@@ -167,7 +206,7 @@ int main(int argc, char **argv) {
       }
 
       ret = cmd_handlers[i].handler(connection, argc - 2,
-                                    argv + (sizeof(*argv) * 2));
+                                    &argv[2]);
       free(connection);
       break;
     }

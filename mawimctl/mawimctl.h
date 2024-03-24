@@ -29,7 +29,7 @@ enum mawimctl_cmd_id {
 };
 
 enum mawimctl_status {
-  MAWIMCTL_OK,
+  MAWIMCTL_OK = 0,
   MAWIMCTL_INVALID_COMMAND,
   MAWIMCTL_INVALID_DATA_FORMAT,
   MAWIMCTL_NO_SUCH_WORKSPACE,
