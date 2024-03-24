@@ -44,6 +44,8 @@ Causes MaWiM to respond with the number of the currently active workspace.
 Causes MaWiM to change the Workspace. The Data Length for this command has to be 1,
 with the data containing the number of the workspace to be set.
 
+The workspace number is a 1-based index.
+
 MaWiM may respond with status MAWIMCTL_OK, or MAWIMCTL_NO_SUCH_WORKSPACE.
 
 ### MAWIMCTL_RELOAD
@@ -74,6 +76,7 @@ MaWiM may respond with MAWIMCTL_OK, MAWIMCTL_NO_WINDOW_FOCUSED, or MAWIMCTL_NO_S
 | 0x04       | MAWIMCTL_CONFIG_MISSING
 | 0x05       | MAWIMCTL_CONFIG_MALFORMED
 | 0x06       | MAWIMCTL_NO_WINDOW_FOCUSED
+| 0x07       | MAWIMCTL_INTENRAL_ERROR
 
 ## Flags
 **header file:** `mawimctl.h`
