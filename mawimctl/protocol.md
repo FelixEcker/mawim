@@ -146,7 +146,9 @@ This enumerator represents every status with which a mawimctl server can
 respond. See the Status chapter for more information.
 
 #### mawimctl_command_t
-`typedef struct mawimctl_command {...} mawimctl_command_t`
+```c
+typedef struct mawimctl_command {...} mawimctl_command_t
+```
 
 This structure type represents a command. Besides the data specified in the
 Communication chapter, it also has some extra fields.
@@ -158,7 +160,9 @@ Communication chapter, it also has some extra fields.
 * `uint8_t  *data;` Pointer to the command data
 
 #### mawimctl_response_t
-`typedef struct mawimctl_response {...} mawimctl_response_t`
+```c
+typedef struct mawimctl_response {...} mawimctl_response_t
+```
 
 This structure type represents a server response to a command.
 
@@ -177,7 +181,9 @@ This structure type represents a server response to a command.
 The size for the backlog of unaccepted connections for the server.
 
 #### mawimctl_server_t
-`typedef struct mawimctl_server {...} mawimctl_server_t`
+```c
+typedef struct mawimctl_server {...} mawimctl_server_t
+```
 
 This structure type represents a mawimctl server. 
 
@@ -188,7 +194,9 @@ This structure type represents a mawimctl server.
 * `mawimctl_command_t *pending_cmds;` Currently pending commands
 
 #### mawimctl_server_start()
-`mawimctl_server_t *mawimctl_server_start(char *where);`
+```c
+mawimctl_server_t *mawimctl_server_start(char *where);
+```
 
 Starts a mawimctl server.
 
@@ -199,7 +207,9 @@ Returns:
 * NULL if the server start failed, otherwise a pointer to the newly allocated server structure.
 
 #### mawimctl_server_stop()
-`void mawimctl_server_stop(mawimctl_server_t *server);`
+```c
+void mawimctl_server_stop(mawimctl_server_t *server);
+```
 
 Stops a mawimctl server and frees its structure.
 
@@ -207,7 +217,9 @@ Parameters:
 * server - Pointer to the server structure which should be stopped.
 
 #### mawimctl_server_update()
-`void mawimctl_server_update(mawimctl_server_t *server);`
+```c
+void mawimctl_server_update(mawimctl_server_t *server);
+```
 
 Updates the server. This includes accepting all new connection requests, reading their commands an queueing them.
 
@@ -215,7 +227,9 @@ Parameters:
 * server - Pointer to the server structure which should be updated.
 
 #### mawimctl_server_next_command()
-`bool mawimctl_server_next_command(mawimctl_server_t *server, mawimctl_command_t *dest_container);`
+```c
+bool mawimctl_server_next_command(mawimctl_server_t *server, mawimctl_command_t *dest_container);
+```
 
 Gets the first pending command in the server's queue.
 
@@ -227,7 +241,9 @@ Returns:
 * true if a command was written to dest_container. false otherwise.
 
 #### mawimctl_server_respond()
-`bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd, mawimctl_response_t response);`
+```c
+bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd, mawimctl_response_t response);
+```
 
 Sends a response to the specified socket.
 
