@@ -235,3 +235,56 @@ Parameters:
 * server - The server structure which should be responded from.
 * sockfd - The socket file descriptor to which should be responded.
 * response - The filled out response which should be sent.
+
+### mawimctl_client.h
+#### mawimctl_connection_t
+```c
+typedef struct mawimctl_connection {...} mawimctl_connection_t;
+```
+
+This structure represents a client's connection to a mawimctl server.
+
+* `int                 sock_fd;` The filedescriptor for the server connevtion.
+* `char               *sock_path;` The path of the socket in the file system.
+* `struct sockaddr_un  sock_name;` Internal Socket Name.
+
+#### mawimctl_client_connect()
+```c
+mawimctl_connection_t *mawimctl_client_connect(char *where);
+```
+
+Establishes a connection to the mawimctl server / MaWiM.
+
+Parameters:
+* where - The location of the socket in the filesystem.
+
+Returns:
+* NULL if connection failed, otherwise a pointer to the newly created connection structure.
+
+#### mawimctl_client_send_command()
+```c
+bool mawimctl_client_send_command(mawimctl_connection_t *connection, mawimctl_command_t command);
+```
+
+Sends a command to the mawimctl server.
+
+Parameters:
+* connection - The connection structure to be used for sending.
+* command - The command to be sent.
+
+Returns:
+* true if successful, false if not.
+
+#### mawimctl_read_response()
+```c
+bool mawimctl_read_response(mawimctl_connection_t *connection, mawimctl_response_t *dest);
+```
+
+Read a response from the mawimctl server into dest.
+
+Parameters:
+* connection - The connection from where the response should be read.
+* dest - Pointer to the mawimctl_response destination structure.
+
+Returns:
+* true on success, false on failure.
