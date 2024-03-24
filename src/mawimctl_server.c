@@ -145,6 +145,9 @@ mawimctl_command_t _parse_command(uint8_t *raw_buffer, int buffer_size) {
          sizeof(command.command_identifier));
   cpy_offs += sizeof(command.command_identifier);
 
+  memcpy(&command.flags, raw_buffer + cpy_offs, sizeof(command.flags));
+  cpy_offs += sizeof(command.flags);
+
   memcpy(&command.data_length, raw_buffer + cpy_offs,
          sizeof(command.data_length));
   cpy_offs += sizeof(command.data_length);
