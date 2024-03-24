@@ -102,8 +102,8 @@ mawimctl_response_t _parse_response(uint8_t *buff, int buffsize) {
   memcpy(&ret.data_length, buff + cpyoffs, sizeof(ret.data_length));
   cpyoffs += sizeof(ret.data_length);
 
-  int to_copy = ret.data_length > (buffsize - MAWIMCTL_COMMAND_BASESIZE)
-                    ? (buffsize - MAWIMCTL_COMMAND_BASESIZE)
+  int to_copy = ret.data_length > (buffsize - MAWIMCTL_RESPONSE_BASESIZE)
+                    ? (buffsize - MAWIMCTL_RESPONSE_BASESIZE)
                     : ret.data_length;
 
   if (to_copy > 0) {
