@@ -4,7 +4,7 @@ sector config
     str obj '../build/obj/'
     str bindest '../build/'
 
-    list str sources 'mawimctl_client'
+    list str sources 'mawimctl_client', 'main'
   end
 
   section mariebuild

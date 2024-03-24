@@ -135,35 +135,3 @@ bool mawimctl_read_response(mawimctl_connection_t *connection,
 
   return true;
 }
-
-int main(void) {
-  mawimctl_connection_t *connection = mawimctl_client_connect(NULL);
-  if (connection == NULL) {
-    return false;
-  }
-
-  int ret = 0;
-
-  mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_GET_VERSION,
-                            .flags = 0,
-                            .data_length = 0,
-                            .data = NULL};
-
-  if (!mawimctl_client_send_command(connection, cmd)) {
-    fprintf(stderr, "failed to send command!\n");
-    ret = 1;
-    goto exit;
-  }
-
-  mawimctl_response_t resp;
-  if (!mawimctl_read_response(connection, &resp)) {
-    ret = 1;
-    goto exit;
-  }
-
-  printf("mawim version (%d bytes): %s\n", resp.data_length, (char *)resp.data);
-
-exit:
-  free(connection);
-  return ret;
-}
