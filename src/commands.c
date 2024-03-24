@@ -75,6 +75,12 @@ bool mawim_handle_ctl_command(mawim_t *mawim, mawimctl_command_t cmd) {
   case MAWIMCTL_CLOSE_FOCUSED:
     resp = handle_close_focused(mawim, cmd);
     break;
+  case MAWIMCTL_RELOAD:
+    mawim_log(LOG_DEBUG, "reloading is to be implemented!\n");
+    break;
+  case MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE:
+    mawim_log(LOG_DEBUG, "workspaces are to be implemented!\n");
+    break;
   default:
     return false;
   }
