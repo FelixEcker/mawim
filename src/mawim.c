@@ -11,7 +11,6 @@
 #include "error.h"
 #include "events.h"
 #include "logging.h"
-#include "xmem.h"
 
 #include <X11/Xlib.h>
 
