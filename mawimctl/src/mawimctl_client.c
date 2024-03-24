@@ -129,8 +129,6 @@ bool mawimctl_read_response(mawimctl_connection_t *connection,
     return false;
   }
 
-  fprintf(stderr, "read %d bytes!\n", bytes_read);
-
   *dest = _parse_response(recvbuf, bytes_read);
 
   return true;
