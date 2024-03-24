@@ -9,6 +9,7 @@
 #include "mawimctl_server.h"
 
 #include "logging.h"
+#include "mawimctl.h"
 #include "xmem.h"
 
 #include <errno.h>
@@ -18,11 +19,17 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+mawimctl_response_t mawimctl_invalid_command_response = {
+    .status = MAWIMCTL_INVALID_COMMAND, .data_length = 0, .data = NULL};
+
 mawimctl_response_t mawimctl_invalid_data_format_response = {
     .status = MAWIMCTL_INVALID_DATA_FORMAT, .data_length = 0, .data = NULL};
 
-mawimctl_response_t mawimctl_invalid_command_response = {
-    .status = MAWIMCTL_INVALID_COMMAND, .data_length = 0, .data = NULL};
+mawimctl_response_t mawimctl_no_such_workspace_response = {
+    .status = MAWIMCTL_NO_SUCH_WORKSPACE, .data_length = 0, .data = NULL};
+
+mawimctl_response_t mawimctl_internal_error_response = {
+    .status = MAWIMCTL_INTENRAL_ERROR, .data_length = 0, .data = NULL};
 
 mawimctl_response_t mawimctl_generic_ok_response = {
     .status = MAWIMCTL_OK, .data_length = 0, .data = NULL};

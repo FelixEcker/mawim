@@ -18,8 +18,10 @@
 #define MAWIMCTL_SERVER_CONNECTION_BACKLOG_SIZE 20
 #endif
 
-extern mawimctl_response_t mawimctl_invalid_data_format_response;
 extern mawimctl_response_t mawimctl_invalid_command_response;
+extern mawimctl_response_t mawimctl_invalid_data_format_response;
+extern mawimctl_response_t mawimctl_no_such_workspace_response;
+extern mawimctl_response_t mawimctl_internal_error_response;
 
 extern mawimctl_response_t mawimctl_generic_ok_response;
 
