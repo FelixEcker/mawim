@@ -9,7 +9,7 @@ my workflow.
 * [X] Automatic Tiling
 * [ ] Workspace Support
 * [ ] Configurable Window Styling (minimalistic) (maybe)
-* [ ] mawimctl
+* [X] mawimctl
 
 ### What it doesn't have
 * EWMH Support
@@ -28,7 +28,7 @@ requries version 0.5.0 or higher. If you have mariebuild installed simply run
 one of the following commands to build:
 ```bash
 # For a debug build
-$ mb 
+$ mb && mb -t mawimctl-debug
 
 # For a release build
 $ mb -t clean && mb -t release
