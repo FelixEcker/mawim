@@ -24,11 +24,21 @@ void panic(char *msg) {
                        }
 
 #define read_resp(a, b) if (!mawimctl_read_response(a, b)) { \
-                          fprintf(stderr, " failed to read response!\n"); \
+                          fprintf(stderr, "failed to read response!\n"); \
                           return 2; \
                         }
 
-#define do_cmd(a, b, c) connection_non_null(a); send_cmd(a, b); read_resp(a, c);
+#define handle_resp(c) if (c.status != MAWIMCTL_OK) { \
+                         fprintf(stderr, \
+                                 "MaWiM responded with an error status: " \
+                                 "%d\n", c.status); \
+                         return 3; \
+                       }
+
+#define do_cmd(a, b, c) connection_non_null(a); \
+                        send_cmd(a, b); \
+                        read_resp(a, &c); \
+                        handle_resp(c);
 
 /* clang-format on */
 
@@ -50,7 +60,7 @@ int get_version(mawimctl_connection_t *connection) {
                             .data = NULL};
   mawimctl_response_t resp;
 
-  do_cmd(connection, cmd, &resp);
+  do_cmd(connection, cmd, resp);
 
   return 0;
 }
