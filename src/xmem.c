@@ -41,7 +41,9 @@ void *xrealloc(void *org, size_t size) {
 
 void xfree(void *ptr) {
   if (ptr != NULL) {
+#if XMEM_LOG_FREES
     mawim_logf(LOG_DEBUG, "xfree on %p\n", ptr);
+#endif
     free(ptr);
     return;
   }

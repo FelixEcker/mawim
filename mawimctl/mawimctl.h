@@ -23,16 +23,23 @@ enum mawimctl_cmd_id {
   MAWIMCTL_RELOAD,
   MAWIMCTL_CLOSE_FOCUSED,
   MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE,
+
+  /* Has to be last value */
+  MAWIMCTL_CMD_INVALID,
 };
 
 enum mawimctl_status {
-  MAWIMCTL_OK,
+  MAWIMCTL_OK = 0,
   MAWIMCTL_INVALID_COMMAND,
   MAWIMCTL_INVALID_DATA_FORMAT,
   MAWIMCTL_NO_SUCH_WORKSPACE,
   MAWIMCTL_CONFIG_MISSING,
   MAWIMCTL_CONFIG_MALFORMED,
   MAWIMCTL_NO_WINDOW_FOCUSED,
+  MAWIMCTL_INTENRAL_ERROR,
+
+  /* Has to be last value */
+  MAWIMCTL_STATUS_INVALID,
 };
 
 typedef struct mawimctl_command {
@@ -45,11 +52,19 @@ typedef struct mawimctl_command {
   uint8_t  *data;
 } mawimctl_command_t;
 
+#define MAWIMCTL_COMMAND_BASESIZE 5
+#define MAWIMCTL_COMMAND_MAXSIZE MAWIMCTL_COMMAND_BASESIZE + UINT16_MAX
+
 typedef struct mawimctl_response {
   uint8_t   status;
   uint16_t  data_length;
   uint8_t  *data;
 } mawimctl_response_t;
+
+#define MAWIMCTL_RESPONSE_BASESIZE 3
+#define MAWIMCTL_RESPONSE_MAXSIZE MAWIMCTL_RESPONSE_BASESIZE + UINT16_MAX
+
+typedef uint8_t mawimctl_workspaceid_t;
 
 /* clang-format on */
 

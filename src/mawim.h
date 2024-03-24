@@ -37,6 +37,6 @@ void mawim_x11_init(mawim_t *mawim);
 /**
  * @brief does the x11 shutdown for mawim
  */
-void mawim_x11_shutdown(mawim_t *mawim);
+void mawim_shutdown(mawim_t *mawim);
 
 #endif /* #ifndef MAWIM_H */

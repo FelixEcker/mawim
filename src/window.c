@@ -8,6 +8,7 @@
 #include "window.h"
 
 #include "logging.h"
+#include "mawim.h"
 #include "types.h"
 #include "xmem.h"
 
