@@ -59,8 +59,9 @@ int get_version(mawimctl_connection_t *connection) {
                             .data_length = 0,
                             .data = NULL};
   mawimctl_response_t resp;
-
   do_cmd(connection, cmd, resp);
+
+  fprintf(stdout, "%s\n", (char *) resp.data);
 
   return 0;
 }
