@@ -52,14 +52,16 @@ void panic(char *msg) {
 
 /* command handlers */
 
-int do_close_focused(mawimctl_connection_t *connection, int argc, char **argv) {
-  mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_CLOSE_FOCUSED,
-                            .flags = 0,
-                            .data_length = 0,
-                            .data = NULL};
+int do_generic_cmd(mawimctl_connection_t *connection, uint8_t cmd_id) {
+  mawimctl_command_t cmd = {
+      .command_identifier = cmd_id, .flags = 0, .data_length = 0, .data = NULL};
   mawimctl_response_t resp;
   do_cmd(connection, cmd, resp);
   return 0;
+}
+
+int do_close_focused(mawimctl_connection_t *connection, int argc, char **argv) {
+  return do_generic_cmd(connection, MAWIMCTL_CLOSE_FOCUSED);
 }
 
 int get_version(mawimctl_connection_t *connection, int argc, char **argv) {
@@ -95,7 +97,9 @@ int get_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
 int do_move_focused_to_workspace(mawimctl_connection_t *connection, int argc,
                                  char **argv) {
   if (argc < 1) {
-    fprintf(stderr, "move_focused_to_workspace expects 1 argument: workspace number!\n");
+    fprintf(
+        stderr,
+        "move_focused_to_workspace expects 1 argument: workspace number!\n");
     return 1;
   }
 
@@ -120,14 +124,7 @@ int do_move_focused_to_workspace(mawimctl_connection_t *connection, int argc,
 }
 
 int do_reload(mawimctl_connection_t *connection, int argc, char **argv) {
-  mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_RELOAD,
-                            .flags = 0,
-                            .data_length = 0,
-                            .data = NULL};
-  mawimctl_response_t resp;
-  do_cmd(connection, cmd, resp);
-
-  return 0;
+  return do_generic_cmd(connection, MAWIMCTL_RELOAD);
 }
 
 int set_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
@@ -138,8 +135,7 @@ int set_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
 
   uint8_t wanted_workspace = atoi(argv[0]);
 
-  mawimctl_command_t cmd = {.command_identifier =
-                                MAWIMCTL_SET_WORKSPACE,
+  mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_SET_WORKSPACE,
                             .flags = 0,
                             .data_length = sizeof(wanted_workspace),
                             .data = malloc(sizeof(wanted_workspace))};
@@ -147,8 +143,6 @@ int set_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
   if (cmd.data == NULL) {
     panic("unable to allocate data for command!\n");
   }
-
-  printf("datalength = %d\n", cmd.data_length);
 
   memcpy(cmd.data, &wanted_workspace, sizeof(wanted_workspace));
 
@@ -205,8 +199,7 @@ int main(int argc, char **argv) {
         macro_connection_null_panic();
       }
 
-      ret = cmd_handlers[i].handler(connection, argc - 2,
-                                    &argv[2]);
+      ret = cmd_handlers[i].handler(connection, argc - 2, &argv[2]);
       free(connection);
       break;
     }

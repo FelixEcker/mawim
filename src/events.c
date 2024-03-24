@@ -122,6 +122,7 @@ Window get_hovered_window(mawim_t *mawim, int x, int y) {
   return match;
 }
 
+/* TODO: find out why we dont receive every leavenotify/crossing event */
 void handle_leave_notify(mawim_t *mawim, XLeaveWindowEvent event) {
   mawim_log(LOG_DEBUG, "Got LeaveNotify!\n");
 
@@ -135,8 +136,6 @@ void handle_leave_notify(mawim_t *mawim, XLeaveWindowEvent event) {
     mawim_log(LOG_WARNING, "newly focused window is not in window list!\n");
   }
 
-  mawim_logf(LOG_DEBUG, "root window is 0x%08x\n", mawim->root);
-  mawim_logf(LOG_DEBUG, "event.root is 0x%08x\n", event.root);
   mawim_logf(LOG_DEBUG, "Set input focus to window 0x%08x\n", window);
 }
 

@@ -64,13 +64,16 @@ int main(void) {
 
   mawim_log(LOG_INFO, "Running MaWiM v" MAWIM_VERSION "\n");
 
-  mawim_t mawim;
-  mawim.windows.first = NULL;
-  mawim.windows.last = NULL;
-  mawim.max_cols = 2;
-  mawim.max_rows = 3;
-  mawim.active_row = 0;
-  mawim.row_count = 1;
+  mawim_t mawim = {
+      .windows.first = NULL,
+      .windows.last = NULL,
+      .max_cols = 2,
+      .max_rows = 3,
+      .active_row = 0,
+      .row_count = 1,
+      .workspace_count = 1,
+      .active_workspace = 1,
+  };
 
   mawim_x11_init(&mawim);
 
