@@ -22,7 +22,9 @@ mawimctl_response_t handle_set_workspace(mawim_t *mawim,
   }
 
   if (cmd.data == NULL) {
-    mawim_log(LOG_ERROR, "handle_set_workspace: cmd.data_length is 1 but cmd.data is NULL!\n");
+    mawim_log(
+        LOG_ERROR,
+        "handle_set_workspace: cmd.data_length is 1 but cmd.data is NULL!\n");
     return mawimctl_internal_error_response;
   }
 
@@ -59,8 +61,8 @@ bool mawim_handle_ctl_command(mawim_t *mawim, mawimctl_command_t cmd) {
     return false;
   }
 
-  bool resp_succ = mawimctl_server_respond(mawim->mawimctl, cmd.sender_fd,
-                                           resp);
+  bool resp_succ =
+      mawimctl_server_respond(mawim->mawimctl, cmd.sender_fd, resp);
   if (!resp_succ) {
     mawim_log(LOG_ERROR, "failed to send mawimctl response!\n");
   }

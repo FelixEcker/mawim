@@ -107,7 +107,7 @@ int main(void) {
       bool handled = mawim_handle_ctl_command(&mawim, cmd);
       if (!handled) {
         mawim_logf(LOG_WARNING, "got unexpected mawimctl command: %d\n",
-                    cmd.command_identifier);
+                   cmd.command_identifier);
       }
     }
 
