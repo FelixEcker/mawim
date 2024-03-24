@@ -56,6 +56,7 @@ typedef struct mawim {
   /* MaWiM */
   mawimctl_server_t *mawimctl;
   window_list_t      windows;
+  mawim_window_t    *focused_window;
 
   uint8_t workspace_count;
   uint8_t active_workspace;

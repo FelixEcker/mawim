@@ -92,14 +92,52 @@ void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {
   mawim_logf(LOG_DEBUG, "Mapped Window 0x%08x\n", event.window);
 }
 
+Window get_hovered_window(mawim_t *mawim, int x, int y) {
+  Window root;
+  Window parent;
+  Window *children;
+  uint32_t nchildren;
+
+  XQueryTree(mawim->display, mawim->root, &root, &parent, &children,
+             &nchildren);
+
+  Window match = root;
+  for (uint32_t i = 0; i < nchildren; i++) {
+    Window win = children[i];
+
+    XWindowAttributes attribs;
+    XGetWindowAttributes(mawim->display, win, &attribs);
+
+    int wx = attribs.x;
+    int wy = attribs.y;
+    int right = attribs.x + wx;
+    int bottom = attribs.y + wy;
+
+    if (wx <= x && wy <= y && right >= x && bottom >= y) {
+      match = win;
+      break;
+    }
+  }
+
+  return match;
+}
+
 void handle_leave_notify(mawim_t *mawim, XLeaveWindowEvent event) {
   mawim_log(LOG_DEBUG, "Got LeaveNotify!\n");
 
-  XSetInputFocus(mawim->display, event.window, RevertToPointerRoot,
-                 CurrentTime);
+  Window window = get_hovered_window(mawim, event.x_root, event.y_root);
+
+  XSetInputFocus(mawim->display, window, RevertToPointerRoot, CurrentTime);
   mawim_x11_flush(mawim);
 
-  mawim_logf(LOG_DEBUG, "Set input focus to window 0x%08x\n", event.window);
+  mawim->focused_window = mawim_find_window(&mawim->windows, window);
+  if (mawim->focused_window == NULL) {
+    mawim_log(LOG_WARNING, "newly focused window is not in window list!\n");
+  }
+
+  mawim_logf(LOG_DEBUG, "root window is 0x%08x\n", mawim->root);
+  mawim_logf(LOG_DEBUG, "event.root is 0x%08x\n", event.root);
+  mawim_logf(LOG_DEBUG, "Set input focus to window 0x%08x\n", window);
 }
 
 void handle_enter_notify(mawim_t *mawim, XEnterWindowEvent event) {
