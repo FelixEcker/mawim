@@ -59,8 +59,25 @@ void mawim_shutdown(mawim_t *mawim) {
   mawimctl_server_stop(mawim->mawimctl);
 }
 
-int main(void) {
+void parse_args(int argc, char **argv) {
+  const char *ARG_VERBOSITY = "--verbosity=";
+
+  for (int i = 0; i < argc; i++) {
+    if (strncmp(argv[i], ARG_VERBOSITY, strlen(ARG_VERBOSITY)) == 0) {
+      log_level_t wanted = atoi(strchr(argv[i], '=') + 1);
+      if (wanted > LOG_ERROR || wanted < LOG_DEBUG) {
+        wanted = DEFAULT_LOG_LEVEL;
+      }
+
+      mawim_log_level = wanted;
+    }
+  }
+}
+
+int main(int argc, char **argv) {
   mawim_log_level = DEFAULT_LOG_LEVEL;
+
+  parse_args(argc, argv);
 
   mawim_log(LOG_INFO, "Running MaWiM v" MAWIM_VERSION "\n");
 

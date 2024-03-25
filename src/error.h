@@ -9,13 +9,11 @@
 #define ERROR_H
 
 #include <X11/Xlib.h>
+#include <stdlib.h>
 
 #define ERRTEXT_BUFF_SIZE 1024
 
-/**
- * @brief print the message and the exit with EXIT_FAILURE
- */
-void mawim_panic(char *msg);
+#define mawim_panic(msg) mawim_logf(LOG_ERROR, "mawim panic'd at %s:%d: %s", __FILE__, __LINE__, msg); exit(EXIT_FAILURE);
 
 /**
  * @brief custom handler for X11 errors
