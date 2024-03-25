@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* We do this define because otherwise nanosleep(); is not available for us */
 #define __USE_POSIX199309
 #include <time.h>
 
