@@ -93,25 +93,20 @@ void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {
 }
 
 Window get_hovered_window(mawim_t *mawim, int x, int y) {
-  Window root;
-  Window parent;
-  Window *children;
-  uint32_t nchildren;
+  Window match = mawim->root;
+  mawim_window_t *current = mawim->windows.first;
 
-  XQueryTree(mawim->display, mawim->root, &root, &parent, &children,
-             &nchildren);
-
-  Window match = root;
-  for (uint32_t i = 0; i < nchildren; i++) {
-    Window win = children[i];
+  while (current != NULL) {
+    Window win = current->x11_window;
+    current = current->next;
 
     XWindowAttributes attribs;
     XGetWindowAttributes(mawim->display, win, &attribs);
 
     int wx = attribs.x;
     int wy = attribs.y;
-    int right = attribs.x + wx;
-    int bottom = attribs.y + wy;
+    int right = attribs.width + wx;
+    int bottom = attribs.height + wy;
 
     if (wx <= x && wy <= y && right >= x && bottom >= y) {
       match = win;
