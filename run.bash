@@ -21,7 +21,7 @@ if argtest --rebuild "$@"; then
   echo "==> Rebuilding MaWiM"
 
   if argtest --release "$@"; then
-    MARIEBUILD_FLAGS=$MARIEBUILD_FLAGS:-t release
+    MARIEBUILD_FLAGS="$MARIEBUILD_FLAGS -t release"
   fi
 
   mb -n $MARIEBUILD_FLAGS || exit 127
