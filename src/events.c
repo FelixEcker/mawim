@@ -66,6 +66,7 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
 
     mawim_window_t *window = mawim_create_window(
         event.window, event.x, event.y, event.width, event.height, true);
+    window->workspace = mawim->active_workspace;
     mawim_append_window(&mawim->windows, window);
     mawim_win = window;
   }

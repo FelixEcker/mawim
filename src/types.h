@@ -29,11 +29,12 @@ typedef struct mawim_window {
   mawim_window_t *next;
 
   /* X11 */
-  Window x11_window;
+  Window         x11_window;
   XWindowChanges changes;
 
   /* Metadata */
-  bool managed;
+  bool                   managed;
+  mawimctl_workspaceid_t workspace;
 
   /* Positioning */
   int x;
