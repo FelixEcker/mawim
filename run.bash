@@ -1,16 +1,20 @@
 #!/bin/bash
 # requires argtest, see https://github.com/FelixEcker/argtest.git
 
+XEPHYR_RESOLUTION='1920x1080'
+XEPHYR_DISPLAY=':101'
+
 if argtest --help "$@" || argtest -? "$@"; then
-  printf "  --help    -?\tDisplay this help text"
-  printf "  --rebuild   \tRebuild mawim before execution"
-  printf "  --release   \tUse the release binary"
-  printf "  --gdb       \tAttach gdb after launch"
-  printf "  --valgrind  \tRunn wrapped in valgrind"
-  printf
-  printf "You can also populate $MARIEBUILD_FLAGS for rebuilding"
-  printf "and $MAWIM_FLAGS for mawim flags"
-  printf
+  printf "  --help    -?\tDisplay this help text\n"
+  printf "  --rebuild   \tRebuild mawim before execution\n"
+  printf "  --release   \tUse the release binary\n"
+  printf "  --gdb       \tAttach gdb after launch\n"
+  printf "  --valgrind  \tRun wrapped in valgrind"
+  printf "\n\n"
+  printf "You can also populate \$MARIEBUILD_FLAGS for rebuilding,\n"
+  printf "\$XEPHYR_RESOLUTION (default $XEPHYR_RESOLUTION) and\n"
+  printf "\$XEPHYR_DISPLAY (default $XEPHYR_DISPLAY)\n"
+  exit
 fi
 
 if argtest --rebuild "$@"; then
@@ -52,10 +56,10 @@ else
 fi
 
 if argtest --gdb "$@"; then
-  xinit ./data/xinitrc -- "$XEPHYR" :101 -ac -screen 1920x1080 -host-cursor &
+  xinit ./data/xinitrc -- "$XEPHYR" $XEPHYR_DISPLAY -ac -screen $XEPHYR_RESOLUTION -host-cursor &
   sleep 5
   mawim_pid=$(pgrep -n mawim)
   sudo -E gdb -p ${mawim_pid}
 else
-  xinit ./data/xinitrc -- "$XEPHYR" :101 -ac -screen 1920x1080 -host-cursor
+  xinit ./data/xinitrc -- "$XEPHYR" $XEPHYR_DISPLAY -ac -screen $XEPHYR_RESOLUTION -host-cursor
 fi
