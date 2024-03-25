@@ -194,7 +194,7 @@ int main(int argc, char **argv) {
 
   for (int i = 0; i < cmd_handlers_count; i++) {
     if (strcmp(argv[1], cmd_handlers[i].cmd_name) == 0) {
-      mawimctl_connection_t *connection = mawimctl_client_connect(NULL);
+      mawimctl_connection_t *connection = mawimctl_client_connect(getenv("MAWIMCTL_SOCK"));
       if (connection == NULL) {
         macro_connection_null_panic();
       }

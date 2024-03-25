@@ -77,7 +77,7 @@ int main(void) {
 
   mawim_x11_init(&mawim);
 
-  mawim.mawimctl = mawimctl_server_start(NULL);
+  mawim.mawimctl = mawimctl_server_start(getenv("MAWIMCTL_SOCK"));
   if (mawim.mawimctl == NULL) {
     mawim_panic("Failed to create mawimctl server!\n");
   }

@@ -1,5 +1,5 @@
 /* mawimctl_server.h ; header for mawimctl servers.
- * See github.com/FelixEcker/mawim.git -> mawimctl/protocol.md
+ * See github.com/FelixEcker/mawim.git -> doc/mawimctl.md
  *
  * Copyright (c) 2024, Marie Eckert
  * Licensed under the BSD 3-Clause License; See the LICENSE file for further
