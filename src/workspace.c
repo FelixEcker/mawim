@@ -22,7 +22,8 @@ mawim_find_window_in_workspaces(mawim_t *mawim, Window x11_window,
                                 window_list_t **out_window_list,
                                 mawimctl_workspaceid_t *out_workspaceid) {
   for (mawimctl_workspaceid_t wid = 0; wid < mawim->workspace_count; wid++) {
-    mawim_window_t *win = mawim_find_window(&mawim->workspaces[wid].windows, x11_window);
+    mawim_window_t *win =
+        mawim_find_window(&mawim->workspaces[wid].windows, x11_window);
     if (win == NULL) {
       continue;
     }

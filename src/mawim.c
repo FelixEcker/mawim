@@ -11,6 +11,7 @@
 #include "error.h"
 #include "events.h"
 #include "logging.h"
+#include "types.h"
 #include "xmem.h"
 
 #include <X11/Xlib.h>
@@ -35,7 +36,7 @@ void mawim_workspace_init(mawim_t *mawim) {
     mawim_workspace_t *workspace = &mawim->workspaces[wid];
 
     workspace->windows.first = NULL;
-    workspace->windows.last = NULL;
+    workspace->windows.last = (mawim_window_t *)0xfeedface;
     workspace->focused_window = NULL;
     workspace->active_row = 0;
     workspace->row_count = 1;

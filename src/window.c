@@ -47,7 +47,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
     XMapWindow(mawim->display, window->x11_window);
   }
 
-  mawim_workspace_t *workspace = &mawim->workspaces[window->workspace];
+  mawim_workspace_t *workspace = &mawim->workspaces[window->workspace - 1];
 
   /* Calculate */
   int count = mawim_get_wins_on_row(&workspace->windows, window->workspace,
@@ -86,7 +86,7 @@ bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
     return false;
   }
 
-  mawim_workspace_t *workspace = &mawim->workspaces[window->workspace];
+  mawim_workspace_t *workspace = &mawim->workspaces[window->workspace - 1];
 
   if (mawim_find_window(&workspace->windows, window->x11_window) == NULL) {
     return false;
@@ -156,7 +156,7 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
   window->row = -1;
   window->col = -1;
 
-  mawim_workspace_t *workspace = &mawim->workspaces[oldworkspace];
+  mawim_workspace_t *workspace = &mawim->workspaces[oldworkspace - 1];
 
   mawim_window_t **row_windows;
   int window_count = mawim_get_wins_on_row(&workspace->windows, oldworkspace,

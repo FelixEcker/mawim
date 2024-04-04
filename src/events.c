@@ -44,7 +44,8 @@ void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
 
   if (mawim_window != NULL) {
     mawim_unmanage_window(mawim, mawim_window);
-    mawim_remove_window(&mawim->workspaces[workspace].windows, event.window);
+    mawim_remove_window(&mawim->workspaces[workspace - 1].windows,
+                        event.window);
   } else {
     mawim_log(LOG_DEBUG, "Nothing to destroy!\n");
   }
@@ -72,7 +73,7 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
         event.window, event.x, event.y, event.width, event.height, true);
     window->workspace = mawim->active_workspace;
 
-    mawim_append_window(&mawim->workspaces[mawim->active_workspace].windows,
+    mawim_append_window(&mawim->workspaces[mawim->active_workspace - 1].windows,
                         window);
     mawim_win = window;
   }
@@ -103,7 +104,7 @@ mawim_window_t *get_hovered_window(mawim_t *mawim, int x, int y) {
   mawim_window_t *match = NULL;
 
   mawim_window_t *current =
-      mawim->workspaces[mawim->active_workspace].windows.first;
+      mawim->workspaces[mawim->active_workspace - 1].windows.first;
 
   while (current != NULL) {
     Window win = current->x11_window;
@@ -139,8 +140,8 @@ void handle_leave_notify(mawim_t *mawim, XLeaveWindowEvent event) {
                  RevertToPointerRoot, CurrentTime);
   mawim_x11_flush(mawim);
 
-  mawim->workspaces[mawim->active_workspace].focused_window = window;
-  if (mawim->workspaces[mawim->active_workspace].focused_window == NULL) {
+  mawim->workspaces[mawim->active_workspace - 1].focused_window = window;
+  if (mawim->workspaces[mawim->active_workspace - 1].focused_window == NULL) {
     mawim_log(LOG_WARNING, "newly focused window is not in window list!\n");
   }
 
@@ -152,7 +153,6 @@ void handle_enter_notify(mawim_t *mawim, XEnterWindowEvent event) {
 }
 
 bool mawim_handle_event(mawim_t *mawim, XEvent event) {
-  mawim_logf(LOG_DEBUG, "Processing Event: %d\n", event.type);
   switch (event.type) {
   case ButtonPress:
     handle_button_press(mawim, event);
