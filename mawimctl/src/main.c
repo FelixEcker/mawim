@@ -5,6 +5,7 @@
  * information.
  */
 
+#include "mawimctl.h"
 #include "mawimctl_client.h"
 
 #include <stdio.h>
@@ -15,6 +16,15 @@ void panic(char *msg) {
   fprintf(stderr, "mawimctl panic'd: %s\n", msg);
   exit(EXIT_FAILURE);
 }
+
+const char *ERRNAMES[] = {"Ok",
+                          "Invalid Command",
+                          "Invalid Data Format",
+                          "No Such Workspace",
+                          "Configuration file is missing",
+                          "Configuration file is malformed",
+                          "No window currently focused",
+                          "MaWiM encountered an internal error"};
 
 /* clang-format off */
 
@@ -39,7 +49,9 @@ void panic(char *msg) {
 #define handle_resp(c) if (c.status != MAWIMCTL_OK) { \
                          fprintf(stderr, \
                                  "MaWiM responded with an error status: " \
-                                 "%d\n", c.status); \
+                                 "%s\n", c.status < MAWIMCTL_STATUS_INVALID ? \
+                                         ERRNAMES[c.status] : \
+                                         "unknown error"); \
                          return 3; \
                        }
 
@@ -194,7 +206,8 @@ int main(int argc, char **argv) {
 
   for (int i = 0; i < cmd_handlers_count; i++) {
     if (strcmp(argv[1], cmd_handlers[i].cmd_name) == 0) {
-      mawimctl_connection_t *connection = mawimctl_client_connect(getenv("MAWIMCTL_SOCK"));
+      mawimctl_connection_t *connection =
+          mawimctl_client_connect(getenv("MAWIMCTL_SOCK"));
       if (connection == NULL) {
         macro_connection_null_panic();
       }
