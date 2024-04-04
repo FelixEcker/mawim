@@ -63,8 +63,8 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
 
   /* TODO: Migrate to mawim_find_window_in_workspaces */
   mawimctl_workspaceid_t workspace;
-  mawim_window_t *mawim_win = mawim_find_window_in_workspaces(
-                                mawim, event.window, NULL, &workspace);
+  mawim_window_t *mawim_win =
+      mawim_find_window_in_workspaces(mawim, event.window, NULL, &workspace);
   if (mawim_win == NULL) {
     mawim_logf(LOG_WARNING,
                "ConfigureRequest is for window 0x%08x which was not previously "
@@ -75,7 +75,8 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
         event.window, event.x, event.y, event.width, event.height, true);
     window->workspace = mawim->active_workspace;
     /* TODO: Use window list of active workspace */
-    mawim_append_window(&mawim->windows, window);
+    mawim_append_window(&mawim->workspaces[mawim->active_workspace].windows,
+                        window);
     mawim_win = window;
   }
 
@@ -102,15 +103,15 @@ void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {
   mawim_logf(LOG_DEBUG, "Mapped Window 0x%08x\n", event.window);
 }
 
-Window get_hovered_window(mawim_t *mawim, int x, int y) {
-  Window match = mawim->root;
+mawim_window_t *get_hovered_window(mawim_t *mawim, int x, int y) {
+  mawim_window_t *match = NULL;
 
   /* TODO: Use active workspaces window list */
-  mawim_window_t *current = mawim->windows.first;
+  mawim_window_t *current =
+      mawim->workspaces[mawim->active_workspace].windows.first;
 
   while (current != NULL) {
     Window win = current->x11_window;
-    current = current->next;
 
     XWindowAttributes attribs;
     XGetWindowAttributes(mawim->display, win, &attribs);
@@ -121,9 +122,11 @@ Window get_hovered_window(mawim_t *mawim, int x, int y) {
     int bottom = attribs.height + wy;
 
     if (wx <= x && wy <= y && right >= x && bottom >= y) {
-      match = win;
+      match = current;
       break;
     }
+
+    current = current->next;
   }
 
   return match;
@@ -133,14 +136,17 @@ Window get_hovered_window(mawim_t *mawim, int x, int y) {
 void handle_leave_notify(mawim_t *mawim, XLeaveWindowEvent event) {
   mawim_log(LOG_DEBUG, "Got LeaveNotify!\n");
 
-  Window window = get_hovered_window(mawim, event.x_root, event.y_root);
+  mawim_window_t *window =
+      get_hovered_window(mawim, event.x_root, event.y_root);
 
-  XSetInputFocus(mawim->display, window, RevertToPointerRoot, CurrentTime);
+  XSetInputFocus(mawim->display,
+                 window != NULL ? window->x11_window : mawim->root,
+                 RevertToPointerRoot, CurrentTime);
   mawim_x11_flush(mawim);
 
   /* TODO: Migrate to mawim_find_window_in_workspaces */
-  mawim->focused_window = mawim_find_window(&mawim->windows, window);
-  if (mawim->focused_window == NULL) {
+  mawim->workspaces[mawim->active_workspace].focused_window = window;
+  if (mawim->workspaces[mawim->active_workspace].focused_window == NULL) {
     mawim_log(LOG_WARNING, "newly focused window is not in window list!\n");
   }
 

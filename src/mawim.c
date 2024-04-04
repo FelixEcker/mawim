@@ -25,8 +25,8 @@
 
 void mawim_workspace_init(mawim_t *mawim) {
   if (mawim->workspaces == NULL) {
-    mawim->workspaces = xmalloc(
-                         mawim->workspace_count * sizeof(*mawim->workspaces));
+    mawim->workspaces =
+        xmalloc(mawim->workspace_count * sizeof(*mawim->workspaces));
   } else {
     /* TODO: Reinit workspaces */
   }
