@@ -69,7 +69,7 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window);
 /**
  * @brief Removes the given window from the window list
  */
-void mawim_remove_window(mawim_t *mawim, Window window);
+void mawim_remove_window(window_list_t *windows, Window window);
 
 /**
  * @brief Destroys the given window list
