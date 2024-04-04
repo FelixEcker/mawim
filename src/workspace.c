@@ -7,11 +7,9 @@
 
 #include "workspace.h"
 
-void mawim_activate_workspace(mawim_t *mawim, mawimctl_workspaceid_t workspace) {
-}
+void mawim_activate_workspace(mawim_t *mawim,
+                              mawimctl_workspaceid_t workspace) {}
 
-void mawim_update_workspace(mawim_t *mawim, mawimctl_workspaceid_t workspace) {
-}
+void mawim_update_workspace(mawim_t *mawim, mawimctl_workspaceid_t workspace) {}
 
-void mawim_update_workspaces(mawim_t *mawim) {
-}
+void mawim_update_workspaces(mawim_t *mawim) {}
