@@ -34,8 +34,8 @@ void mawim_update_workspaces(mawim_t *mawim);
  *                        window will be written to it.
  */
 mawim_window_t *
-mawim_find_window_in_workspaces(mawim_t, Window x11_window,
+mawim_find_window_in_workspaces(mawim_t *mawim, Window x11_window,
                                 window_list_t **out_window_list,
-                                mawim_workspaceid_t *out_workspaceid);
+                                mawimctl_workspaceid_t *out_workspaceid);
 
 #endif /* #infdef WORKSPACE_H */

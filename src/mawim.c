@@ -11,6 +11,7 @@
 #include "error.h"
 #include "events.h"
 #include "logging.h"
+#include "xmem.h"
 
 #include <X11/Xlib.h>
 
@@ -21,6 +22,25 @@
 /* We do this define because otherwise nanosleep(); is not available for us */
 #define __USE_POSIX199309
 #include <time.h>
+
+void mawim_workspace_init(mawim_t *mawim) {
+  if (mawim->workspaces == NULL) {
+    mawim->workspaces = xmalloc(
+                         mawim->workspace_count * sizeof(*mawim->workspaces));
+  } else {
+    /* TODO: Reinit workspaces */
+  }
+
+  for (mawimctl_workspaceid_t wid = 0; wid < mawim->workspace_count; wid++) {
+    mawim_workspace_t *workspace = &mawim->workspaces[wid];
+
+    workspace->windows.first = NULL;
+    workspace->windows.last = NULL;
+    workspace->focused_window = NULL;
+    workspace->active_row = 0;
+    workspace->row_count = 1;
+  }
+}
 
 void mawim_x11_flush(mawim_t *mawim) { XSync(mawim->display, false); }
 
@@ -82,15 +102,14 @@ int main(int argc, char **argv) {
   mawim_log(LOG_INFO, "Running MaWiM v" MAWIM_VERSION "\n");
 
   mawim_t mawim = {
-      .windows.first = NULL,
-      .windows.last = NULL,
       .max_cols = 2,
       .max_rows = 3,
-      .active_row = 0,
-      .row_count = 1,
       .workspace_count = 2,
       .active_workspace = 1,
+      .workspaces = NULL,
   };
+
+  mawim_workspace_init(&mawim);
 
   mawim_x11_init(&mawim);
 
