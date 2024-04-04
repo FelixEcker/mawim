@@ -11,6 +11,7 @@
 #include "mawim.h"
 #include "types.h"
 #include "window.h"
+#include "workspace.h"
 
 const char *event_type_str[37] = {
     (char *)0,        (char *)1,        "KeyPress",         "KeyRelease",
@@ -38,8 +39,9 @@ void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
   mawim_logf(LOG_DEBUG, "Got DestroyNotify (window 0x%08x)!\n", event.window);
 
   /* TODO: Migrate to mawim_find_window_in_workspaces (?) */
+  mawimctl_workspaceid_t workspace;
   mawim_window_t *mawim_window =
-      mawim_find_window(&mawim->windows, event.window);
+      mawim_find_window_in_workspaces(mawim, event.window, NULL, &workspace);
 
   if (mawim_window != NULL) {
     /* TODO: Rethink what to pass to the management logic */
@@ -60,7 +62,9 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
   mawim_log(LOG_DEBUG, "Got ConfigureRequest!\n");
 
   /* TODO: Migrate to mawim_find_window_in_workspaces */
-  mawim_window_t *mawim_win = mawim_find_window(&mawim->windows, event.window);
+  mawimctl_workspaceid_t workspace;
+  mawim_window_t *mawim_win = mawim_find_window_in_workspaces(
+                                mawim, event.window, NULL, &workspace);
   if (mawim_win == NULL) {
     mawim_logf(LOG_WARNING,
                "ConfigureRequest is for window 0x%08x which was not previously "
