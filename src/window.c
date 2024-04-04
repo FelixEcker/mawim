@@ -82,9 +82,9 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
 
 bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
                          XConfigureRequestEvent event) {
-  if (!window->managed) {
+/*  if (!window->managed) {
     return false;
-  }
+  } */
 
   mawim_workspace_t *workspace = &mawim->workspaces[window->workspace - 1];
 

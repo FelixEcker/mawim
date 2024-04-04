@@ -33,7 +33,8 @@ mawim_find_window_in_workspaces(mawim_t *mawim, Window x11_window,
     }
 
     if (out_workspaceid != NULL) {
-      *out_workspaceid = wid;
+      /* increment by one because workspace ids are 1-based */
+      *out_workspaceid = wid + 1;
     }
 
     return win;
