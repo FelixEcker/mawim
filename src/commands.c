@@ -10,6 +10,7 @@
 #include "logging.h"
 #include "mawim.h"
 #include "mawimctl_server.h"
+#include "window.h"
 #include "xmem.h"
 
 #include <string.h>
@@ -34,8 +35,7 @@ mawimctl_response_t handle_set_workspace(mawim_t *mawim,
   }
 
   mawim->active_workspace = wanted_workspace;
-
-  /* mawim_update_workspace(maiwm); */
+  mawim_update_all_windows(mawim);
 
   return resp;
 }

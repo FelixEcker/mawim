@@ -40,6 +40,12 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
     return;
   }
 
+  if (window->workspace != mawim->active_workspace) {
+    XWithdrawWindow(mawim->display, window->x11_window, mawim->default_screen);
+  } else {
+    XMapWindow(mawim->display, window->x11_window);
+  }
+
   /* Calculate */
   int count = mawim_get_wins_on_row(&mawim->windows, window->row, NULL);
 

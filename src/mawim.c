@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
       .max_rows = 3,
       .active_row = 0,
       .row_count = 1,
-      .workspace_count = 1,
+      .workspace_count = 2,
       .active_workspace = 1,
   };
 
