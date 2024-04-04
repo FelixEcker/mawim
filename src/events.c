@@ -38,13 +38,11 @@ void handle_create_notify(mawim_t *mawim, XCreateWindowEvent event) {
 void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
   mawim_logf(LOG_DEBUG, "Got DestroyNotify (window 0x%08x)!\n", event.window);
 
-  /* TODO: Migrate to mawim_find_window_in_workspaces (?) */
   mawimctl_workspaceid_t workspace;
   mawim_window_t *mawim_window =
       mawim_find_window_in_workspaces(mawim, event.window, NULL, &workspace);
 
   if (mawim_window != NULL) {
-    /* TODO: Rethink what to pass to the management logic */
     mawim_unmanage_window(mawim, mawim_window);
     mawim_remove_window(&mawim->workspaces[workspace].windows, event.window);
   } else {
@@ -61,7 +59,6 @@ void handle_reparent_notify(mawim_t *mawim, XEvent event) {
 void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
   mawim_log(LOG_DEBUG, "Got ConfigureRequest!\n");
 
-  /* TODO: Migrate to mawim_find_window_in_workspaces */
   mawimctl_workspaceid_t workspace;
   mawim_window_t *mawim_win =
       mawim_find_window_in_workspaces(mawim, event.window, NULL, &workspace);
@@ -74,13 +71,12 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
     mawim_window_t *window = mawim_create_window(
         event.window, event.x, event.y, event.width, event.height, true);
     window->workspace = mawim->active_workspace;
-    /* TODO: Use window list of active workspace */
+
     mawim_append_window(&mawim->workspaces[mawim->active_workspace].windows,
                         window);
     mawim_win = window;
   }
 
-  /* TODO: Rethink what to pass the management logic */
   bool manage_result = mawim_manage_window(mawim, mawim_win, event);
   if (manage_result) {
     mawim_log(LOG_DEBUG, "Window is being managed now!\n");
@@ -106,7 +102,6 @@ void handle_map_request(mawim_t *mawim, XMapRequestEvent event) {
 mawim_window_t *get_hovered_window(mawim_t *mawim, int x, int y) {
   mawim_window_t *match = NULL;
 
-  /* TODO: Use active workspaces window list */
   mawim_window_t *current =
       mawim->workspaces[mawim->active_workspace].windows.first;
 
@@ -144,7 +139,6 @@ void handle_leave_notify(mawim_t *mawim, XLeaveWindowEvent event) {
                  RevertToPointerRoot, CurrentTime);
   mawim_x11_flush(mawim);
 
-  /* TODO: Migrate to mawim_find_window_in_workspaces */
   mawim->workspaces[mawim->active_workspace].focused_window = window;
   if (mawim->workspaces[mawim->active_workspace].focused_window == NULL) {
     mawim_log(LOG_WARNING, "newly focused window is not in window list!\n");
