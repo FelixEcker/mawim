@@ -13,7 +13,10 @@
 
 #define ERRTEXT_BUFF_SIZE 1024
 
-#define mawim_panic(msg) mawim_logf(LOG_ERROR, "mawim panic'd at %s:%d: %s", __FILE__, __LINE__, msg); exit(EXIT_FAILURE);
+#define mawim_panic(msg)                                                       \
+  mawim_logf(LOG_ERROR, "mawim panic'd at %s:%d: %s", __FILE__, __LINE__,      \
+             msg);                                                             \
+  exit(EXIT_FAILURE);
 
 /**
  * @brief custom handler for X11 errors
