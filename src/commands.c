@@ -10,6 +10,8 @@
 #include "logging.h"
 #include "mawim.h"
 #include "mawimctl_server.h"
+#include "types.h"
+#include "window.h"
 #include "xmem.h"
 
 #include <string.h>
@@ -34,8 +36,7 @@ mawimctl_response_t handle_set_workspace(mawim_t *mawim,
   }
 
   mawim->active_workspace = wanted_workspace;
-
-  /* mawim_update_workspace(maiwm); */
+  mawim_update_all_windows(mawim);
 
   return resp;
 }
@@ -44,13 +45,15 @@ mawimctl_response_t handle_close_focused(mawim_t *mawim,
                                          mawimctl_command_t cmd) {
   mawimctl_response_t resp = mawimctl_generic_ok_response;
 
-  if (mawim->focused_window == NULL) {
+  mawim_workspace_t *workspace = &mawim->workspaces[mawim->active_workspace];
+
+  if (workspace->focused_window == NULL) {
     resp.status = MAWIMCTL_NO_WINDOW_FOCUSED;
     mawim_log(LOG_ERROR, "handle_close_focused: no window focused!\n");
     return resp;
   }
 
-  XDestroyWindow(mawim->display, mawim->focused_window->x11_window);
+  XDestroyWindow(mawim->display, workspace->focused_window->x11_window);
 
   return resp;
 }

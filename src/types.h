@@ -29,11 +29,11 @@ typedef struct mawim_window {
   mawim_window_t *next;
 
   /* X11 */
-  Window x11_window;
+  Window         x11_window;
   XWindowChanges changes;
 
   /* Metadata */
-  bool managed;
+  mawimctl_workspaceid_t workspace;
 
   /* Positioning */
   int x;
@@ -46,6 +46,14 @@ typedef struct mawim_window {
   int cols_on_row;
 } mawim_window_t;
 
+typedef struct mawim_workspace {
+  window_list_t   windows;
+  mawim_window_t *focused_window;
+
+  int active_row;
+  int row_count;
+} mawim_workspace_t;
+
 typedef struct mawim {
   /* X11 */
   Display *display;
@@ -55,16 +63,14 @@ typedef struct mawim {
 
   /* MaWiM */
   mawimctl_server_t *mawimctl;
-  window_list_t      windows;
-  mawim_window_t    *focused_window;
 
   mawimctl_workspaceid_t workspace_count;
   mawimctl_workspaceid_t active_workspace;
+  mawim_workspace_t *workspaces;
 
+  /* Configuration */
   int max_cols;
   int max_rows;
-  int active_row;
-  int row_count;
 } mawim_t;
 
 /* clang-format on */

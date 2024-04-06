@@ -11,6 +11,8 @@
 #include "error.h"
 #include "events.h"
 #include "logging.h"
+#include "types.h"
+#include "xmem.h"
 
 #include <X11/Xlib.h>
 
@@ -21,6 +23,25 @@
 /* We do this define because otherwise nanosleep(); is not available for us */
 #define __USE_POSIX199309
 #include <time.h>
+
+void mawim_workspace_init(mawim_t *mawim) {
+  if (mawim->workspaces == NULL) {
+    mawim->workspaces =
+        xmalloc(mawim->workspace_count * sizeof(*mawim->workspaces));
+  } else {
+    /* TODO: Reinit workspaces */
+  }
+
+  for (mawimctl_workspaceid_t wid = 0; wid < mawim->workspace_count; wid++) {
+    mawim_workspace_t *workspace = &mawim->workspaces[wid];
+
+    workspace->windows.first = NULL;
+    workspace->windows.last = (mawim_window_t *)0xfeedface;
+    workspace->focused_window = NULL;
+    workspace->active_row = 0;
+    workspace->row_count = 1;
+  }
+}
 
 void mawim_x11_flush(mawim_t *mawim) { XSync(mawim->display, false); }
 
@@ -59,8 +80,21 @@ void mawim_shutdown(mawim_t *mawim) {
   mawimctl_server_stop(mawim->mawimctl);
 }
 
+void help() {
+  printf("   __  ___    _      ___ __  ___\n");
+  printf("  /  |/  /__ | | /| / (_)  |/  /\n");
+  printf(" / /|_/ / _ `/ |/ |/ / / /|_/ / \n");
+  printf("/_/  /_/\\_,_/|__/|__/_/_/  /_/  \n");
+  printf("\n");
+  printf("v" MAWIM_VERSION "\n");
+  printf("\t--help              Show this help text\n");
+  printf("\t--verbosity=<0..3>  Specifies the log verbosity\n");
+  printf("\n");
+}
+
 void parse_args(int argc, char **argv) {
   const char *ARG_VERBOSITY = "--verbosity=";
+  const char *ARG_HELP = "--help";
 
   for (int i = 0; i < argc; i++) {
     if (strncmp(argv[i], ARG_VERBOSITY, strlen(ARG_VERBOSITY)) == 0) {
@@ -70,6 +104,12 @@ void parse_args(int argc, char **argv) {
       }
 
       mawim_log_level = wanted;
+      continue;
+    }
+
+    if (strncmp(argv[i], ARG_HELP, strlen(ARG_HELP)) == 0) {
+      help();
+      exit(0);
     }
   }
 }
@@ -82,15 +122,14 @@ int main(int argc, char **argv) {
   mawim_log(LOG_INFO, "Running MaWiM v" MAWIM_VERSION "\n");
 
   mawim_t mawim = {
-      .windows.first = NULL,
-      .windows.last = NULL,
       .max_cols = 2,
       .max_rows = 3,
-      .active_row = 0,
-      .row_count = 1,
-      .workspace_count = 1,
+      .workspace_count = 2,
       .active_workspace = 1,
+      .workspaces = NULL,
   };
+
+  mawim_workspace_init(&mawim);
 
   mawim_x11_init(&mawim);
 
