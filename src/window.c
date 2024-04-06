@@ -294,7 +294,7 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
   list->last = mawim_window;
 }
 
-void mawim_remove_window(window_list_t *windows, Window window) {
+void mawim_remove_window(window_list_t *windows, Window window, bool free) {
   if (windows->first == NULL) {
     mawim_log(LOG_DEBUG, "remove_window: windows.first == NULL\n");
     return;
@@ -322,7 +322,9 @@ void mawim_remove_window(window_list_t *windows, Window window) {
     windows->first = current->next;
   }
 
-  xfree(current);
+  if (free) {
+    xfree(current);
+  }
 }
 
 void mawim_destroy_window_list(window_list_t *list) {
