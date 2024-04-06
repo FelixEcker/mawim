@@ -58,6 +58,33 @@ mawimctl_response_t handle_close_focused(mawim_t *mawim,
   return resp;
 }
 
+mawimctl_response_t handle_move_focused_to_workspace(mawim_t *mawim,
+                                                     mawimctl_command_t cmd) {
+  mawimctl_response_t resp = mawimctl_generic_ok_response;
+
+  uint8_t wanted_workspace = cmd.data[0];
+  if (wanted_workspace > mawim->workspace_count) {
+    return mawimctl_no_such_workspace_response;
+  }
+
+  mawim_workspace_t *workspace = &mawim->workspaces[mawim->active_workspace - 1];
+  mawim_workspace_t *dest_workspace = &mawim->workspaces[wanted_workspace - 1];
+
+  if (workspace->focused_window == NULL) {
+    resp.status = MAWIMCTL_NO_WINDOW_FOCUSED;
+    mawim_log(LOG_ERROR, "handle_close_focused: no window focused!\n");
+    return resp;
+  }
+
+  mawim_window_t *window = workspace->focused_window;
+
+  mawim_remove_window(&workspace->windows, window->x11_window, false);
+  mawim_append_window(&dest_workspace->windows, window);
+  mawim_update_all_windows(mawim);
+
+  return resp;
+}
+
 bool mawim_handle_ctl_command(mawim_t *mawim, mawimctl_command_t cmd) {
   mawimctl_response_t resp = mawimctl_generic_ok_response;
 
@@ -82,7 +109,7 @@ bool mawim_handle_ctl_command(mawim_t *mawim, mawimctl_command_t cmd) {
     mawim_log(LOG_DEBUG, "reloading is to be implemented!\n");
     break;
   case MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE:
-    mawim_log(LOG_DEBUG, "workspaces are to be implemented!\n");
+    resp = handle_move_focused_to_workspace(mawim, cmd);
     break;
   default:
     return false;
