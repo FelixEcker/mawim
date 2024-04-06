@@ -33,7 +33,6 @@ typedef struct mawim_window {
   XWindowChanges changes;
 
   /* Metadata */
-  bool                   managed;
   mawimctl_workspaceid_t workspace;
 
   /* Positioning */

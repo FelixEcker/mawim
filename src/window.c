@@ -21,11 +21,10 @@ int max(int a, int b) { return a > b ? a : b; }
 /* management operations */
 
 mawim_window_t *mawim_create_window(Window win, int x, int y, int width,
-                                    int height, bool managed) {
+                                    int height) {
   mawim_window_t *window = xmalloc(sizeof(mawim_window_t));
   window->next = NULL;
   window->x11_window = win;
-  window->managed = managed;
   window->x = x;
   window->y = y;
   window->width = width;
@@ -82,10 +81,6 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
 
 bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
                          XConfigureRequestEvent event) {
-/*  if (!window->managed) {
-    return false;
-  } */
-
   mawim_workspace_t *workspace = &mawim->workspaces[window->workspace - 1];
 
   if (mawim_find_window(&workspace->windows, window->x11_window) == NULL) {
@@ -147,8 +142,6 @@ void mawim_unmanage_window(mawim_t *mawim, mawim_window_t *window) {
   int oldrow = window->row;
   int oldcol = window->col;
   int oldworkspace = window->workspace;
-
-  window->managed = false;
 
   /* Set row and col to -1 to avoid counting this window with
    * mawim_get_wins_on_row().
@@ -276,32 +269,6 @@ int mawim_get_wins_on_row(window_list_t *list, mawimctl_workspaceid_t workspace,
       (*dest)[wix] = current;
       wix++;
     }
-  }
-
-  return count;
-}
-
-bool mawim_is_window_managed(window_list_t *list, Window window) {
-  mawim_window_t *mawim_window = mawim_find_window(list, window);
-
-  if (mawim_window == NULL) {
-    return false;
-  }
-
-  return mawim_window->managed;
-}
-
-int mawim_window_count(window_list_t *list) {
-  if (list->first == NULL) {
-    return 0;
-  }
-
-  int count = 1;
-  mawim_window_t *current = list->first;
-
-  while (current->next != NULL) {
-    count++;
-    current = current->next;
   }
 
   return count;

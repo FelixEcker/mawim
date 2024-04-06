@@ -16,7 +16,7 @@
  * @brief Create a heap allocated window
  */
 mawim_window_t *mawim_create_window(Window win, int x, int y, int width,
-                                    int height, bool managed);
+                                    int height);
 
 /**
  * @brief Updates a window's geometry and configures it
@@ -50,16 +50,6 @@ mawim_window_t *mawim_find_window(window_list_t *list, Window window);
  */
 int mawim_get_wins_on_row(window_list_t *list, mawimctl_workspaceid_t workspace,
                           int row, mawim_window_t ***dest);
-
-/**
- * @brief Checks if the given x11 window is currently being managed
- */
-bool mawim_is_window_managed(window_list_t *list, Window window);
-
-/**
- * @brief Get the amount of windows currently registered with MaWiM
- */
-int mawim_window_count(window_list_t *list);
 
 /**
  * @brief Appends the given mawim window to the list
