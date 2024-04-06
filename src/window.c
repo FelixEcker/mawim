@@ -248,6 +248,7 @@ int mawim_get_wins_on_row(window_list_t *list, mawimctl_workspaceid_t workspace,
     }
   }
 
+  /* Early exit if list of windows is not wanted */
   if (dest == NULL) {
     return count;
   }
@@ -275,6 +276,10 @@ int mawim_get_wins_on_row(window_list_t *list, mawimctl_workspaceid_t workspace,
 }
 
 void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
+  if (list == NULL) {
+    mawim_logf(LOG_WARNING, "mawim_append_window was passed a NULL list!\n");
+  }
+
   mawim_window->next = NULL;
 
   if (list->first == NULL) {
@@ -298,7 +303,6 @@ void mawim_remove_window(window_list_t *windows, Window window) {
   mawim_window_t *current = windows->first;
   mawim_window_t *previous = NULL;
 
-  mawim_logf(LOG_DEBUG, "current = %p\n", current);
   while (current->next != NULL) {
     if (current->x11_window == window)
       break;
