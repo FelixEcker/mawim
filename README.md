@@ -7,7 +7,7 @@ my workflow.
 
 ### What it does have (or will have)
 * [X] Automatic Tiling
-* [ ] Workspace Support
+* [X] Workspace Support (Not fully functional as of now)
 * [ ] Configurable Window Styling (minimalistic) (maybe)
 * [X] mawimctl
 
