@@ -311,6 +311,10 @@ void mawim_remove_window(window_list_t *windows, Window window, bool free) {
     current = current->next;
   }
 
+  /* Somehow previous' next is assigned the pointer to previous.
+   * TODO: fix fuckup
+   */
+
   if (previous != NULL) {
     previous->next = current->next;
   }
