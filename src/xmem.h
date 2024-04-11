@@ -8,14 +8,6 @@
 #ifndef XMEM_H
 #define XMEM_H
 
-#if !defined(XMEM_LOGGING)
-#define XMEM_LOGGING 1
-#endif
-
-#if !defined(XMEM_LOG_FREES)
-#define XMEM_LOG_FREES 0
-#endif
-
 #include "error.h"
 #include "logging.h"
 
