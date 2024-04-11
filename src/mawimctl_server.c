@@ -219,6 +219,11 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
       mawim_log(LOG_ERROR, "mawimctl_server: failed to send response!\n");
     }
     close(fd);
+
+    if (command.data != NULL) {
+      xfree(command.data);
+    }
+
     return;
   }
 

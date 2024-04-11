@@ -168,6 +168,10 @@ int main(int argc, char **argv) {
         mawim_logf(LOG_WARNING, "got unexpected mawimctl command: %d\n",
                    cmd.command_identifier);
       }
+
+      if (cmd.data != NULL) {
+        xfree(cmd.data);
+      }
     }
 
     nanosleep(&sleep_time, NULL);
