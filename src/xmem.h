@@ -16,12 +16,38 @@
 #define XMEM_LOG_FREES 0
 #endif
 
+#include "error.h"
+#include "logging.h"
+
 #include <stddef.h>
 
-void *xmalloc(size_t size);
+#define STR(x) #x
 
-void *xrealloc(void *org, size_t size);
+#define xmalloc(s)                                                             \
+  ({                                                                           \
+    void *ret;                                                                 \
+    ret = malloc(s);                                                           \
+    if (ret == NULL) {                                                         \
+      mawim_panic(__FILE__ ":" STR(__LINE__) ": xmalloc returned NULL!");      \
+    }                                                                          \
+    ret;                                                                       \
+  })
 
-void xfree(void *ptr);
+#define xrealloc(o, s)                                                         \
+  ({                                                                           \
+    void *ret;                                                                 \
+    ret = realloc(o, s);                                                       \
+    if (ret == NULL) {                                                         \
+      mawim_panic(__FILE__ ":" STR(__LINE__) ": xrealloc returned NULL!");     \
+    }                                                                          \
+    ret;                                                                       \
+  })
+
+#define xfree(p)                                                               \
+  if (p != NULL) {                                                             \
+    free(p);                                                                   \
+  } else {                                                                     \
+    mawim_log(LOG_ERROR, __FILE__ ":" STR(__LINE__) ": xfree received NULL!"); \
+  }
 
 #endif /* #ifndef XMEM_H */
