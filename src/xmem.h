@@ -13,14 +13,15 @@
 
 #include <stddef.h>
 
-#define STR(x) #x
+#define _STR(x) #x
+#define STR(x) _STR(x)
 
 #define xmalloc(s)                                                             \
   ({                                                                           \
     void *ret;                                                                 \
     ret = malloc(s);                                                           \
     if (ret == NULL) {                                                         \
-      mawim_panic(__FILE__ ":" STR(__LINE__) ": xmalloc returned NULL!");      \
+      mawim_panic("xmalloc returned NULL!");                                   \
     }                                                                          \
     ret;                                                                       \
   })
@@ -30,7 +31,7 @@
     void *ret;                                                                 \
     ret = realloc(o, s);                                                       \
     if (ret == NULL) {                                                         \
-      mawim_panic(__FILE__ ":" STR(__LINE__) ": xrealloc returned NULL!");     \
+      mawim_panic("xrealloc returned NULL!");                                  \
     }                                                                          \
     ret;                                                                       \
   })
