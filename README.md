@@ -24,7 +24,7 @@ my workflow.
 
 ### Compilation
 MaWiM is built using [mariebuild](https://github.com/FelixEcker/mariebuild) and
-requries version 0.5.0 or higher. If you have mariebuild installed simply run
+requries version 0.5.1 or higher. If you have mariebuild installed simply run
 one of the following commands to build:
 ```bash
 # For a debug build

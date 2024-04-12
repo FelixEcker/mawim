@@ -39,7 +39,7 @@ mkdir -p $(/config/files/obj)
   end
 
   section debug
-    str target_cflags '-ggdb -DDEFAULT_LOG_LEVEL=LOG_DEBUG'
+    str target_cflags '-ggdb -DDEFAULT_LOG_LEVEL=LOG_DEBUG -DDEBUG -DCOMMIT_HASH=\\"\$(git rev-parse --short HEAD)\\"'
     str target_bindest '$(/config/files/bindest)debug/'
 
     list str c_rules 'executable'

@@ -9,7 +9,6 @@
 #define XMEM_H
 
 #include "error.h"
-#include "logging.h"
 
 #include <stddef.h>
 
