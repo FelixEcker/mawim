@@ -159,6 +159,8 @@ mawimctl_command_t _parse_command(uint8_t *raw_buffer, int buffer_size) {
   if (to_copy > 0) {
     command.data = xmalloc(to_copy);
     memcpy(command.data, raw_buffer + cpy_offs, to_copy);
+  } else {
+    command.data = NULL;
   }
 
   return command;
