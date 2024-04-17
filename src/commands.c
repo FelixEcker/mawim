@@ -85,7 +85,10 @@ mawimctl_response_t handle_move_focused_to_workspace(mawim_t *mawim,
   window->workspace = wanted_workspace;
 
   mawim_append_window(&dest_workspace->windows, window);
-  mawim_manage_window(mawim, window);
+  if (!mawim_manage_window(mawim, window)) {
+    mawim_logf(LOG_ERROR, "failed to manage window 0x%08x on workspace %d\n",
+               window->x11_window, wanted_workspace);
+  }
 
   /* mawim_manage_window doesn't necessarily update all windows,
    * so do that here again.

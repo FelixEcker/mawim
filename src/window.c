@@ -244,6 +244,11 @@ int mawim_get_wins_on_row(window_list_t *list, mawimctl_workspaceid_t workspace,
     if (current->row == row && current->workspace == workspace) {
       count++;
     }
+
+    /* sanity check */
+    if (current != NULL && current == current->next) {
+      mawim_panic("circular linked list!\n");
+    }
   }
 
   /* Early exit if list of windows is not wanted */
@@ -288,6 +293,11 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
     return;
   }
 
+  /* avoid circular linkage, how does this happend ? */
+  if (list->last == mawim_window) {
+    return;
+  }
+
   list->last->next = mawim_window;
   list->last = mawim_window;
 }
@@ -309,10 +319,6 @@ void mawim_remove_window(window_list_t *windows, Window window,
     previous = current;
     current = current->next;
   }
-
-  /* Somehow previous' next is assigned the pointer to previous.
-   * TODO: fix fuckup
-   */
 
   if (previous != NULL) {
     previous->next = current->next;
