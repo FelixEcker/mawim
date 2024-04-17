@@ -4,7 +4,7 @@ sector config
     str obj 'build/obj/'
     str bindest 'build/'
 
-    list str sources 'xmem', 'logging', 'events', 'error', 'window', 'workspace', 'mawimctl_server', 'commands', 'mawim'
+    list str sources 'logging', 'events', 'error', 'window', 'workspace', 'mawimctl_server', 'commands', 'mawim'
   end
 
   section mariebuild
@@ -39,7 +39,7 @@ mkdir -p $(/config/files/obj)
   end
 
   section debug
-    str target_cflags '-ggdb -DDEFAULT_LOG_LEVEL=LOG_DEBUG'
+    str target_cflags '-ggdb -DDEFAULT_LOG_LEVEL=LOG_DEBUG -DDEBUG -DCOMMIT_HASH=\\"\$(git rev-parse --short HEAD)\\"'
     str target_bindest '$(/config/files/bindest)debug/'
 
     list str c_rules 'executable'

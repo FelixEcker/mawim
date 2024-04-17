@@ -13,7 +13,13 @@
 #include <X11/Xlib.h>
 #include <X11/cursorfont.h>
 
-#define MAWIM_VERSION "0.2.0 (develop-test)"
+#define BASE_VERSION "0.3.0 (develop-test)"
+
+#ifndef DEBUG
+#define MAWIM_VERSION BASE_VERSION
+#else
+#define MAWIM_VERSION BASE_VERSION " [" COMMIT_HASH ", debug build]"
+#endif
 
 /**
  * @brief flushes x11 events

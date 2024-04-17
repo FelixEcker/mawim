@@ -116,10 +116,12 @@ bool mawim_handle_ctl_command(mawim_t *mawim, mawimctl_command_t cmd) {
     return false;
   }
 
-  bool resp_succ =
-      mawimctl_server_respond(mawim->mawimctl, cmd.sender_fd, resp);
-  if (!resp_succ) {
-    mawim_log(LOG_ERROR, "failed to send mawimctl response!\n");
+  if (!(cmd.flags & MAWIMCTL_FLAG_NO_RESPONSE)) {
+    bool resp_succ =
+        mawimctl_server_respond(mawim->mawimctl, cmd.sender_fd, resp);
+    if (!resp_succ) {
+      mawim_log(LOG_ERROR, "failed to send mawimctl response!\n");
+    }
   }
 
   if (resp.data != NULL) {

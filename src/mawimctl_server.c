@@ -159,6 +159,8 @@ mawimctl_command_t _parse_command(uint8_t *raw_buffer, int buffer_size) {
   if (to_copy > 0) {
     command.data = xmalloc(to_copy);
     memcpy(command.data, raw_buffer + cpy_offs, to_copy);
+  } else {
+    command.data = NULL;
   }
 
   return command;
@@ -219,6 +221,11 @@ void _handle_incoming_command(mawimctl_server_t *server, int fd) {
       mawim_log(LOG_ERROR, "mawimctl_server: failed to send response!\n");
     }
     close(fd);
+
+    if (command.data != NULL) {
+      xfree(command.data);
+    }
+
     return;
   }
 

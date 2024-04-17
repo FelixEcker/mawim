@@ -8,20 +8,38 @@
 #ifndef XMEM_H
 #define XMEM_H
 
-#if !defined(XMEM_LOGGING)
-#define XMEM_LOGGING 1
-#endif
-
-#if !defined(XMEM_LOG_FREES)
-#define XMEM_LOG_FREES 0
-#endif
+#include "error.h"
 
 #include <stddef.h>
 
-void *xmalloc(size_t size);
+#define _STR(x) #x
+#define STR(x) _STR(x)
 
-void *xrealloc(void *org, size_t size);
+#define xmalloc(s)                                                             \
+  ({                                                                           \
+    void *ret;                                                                 \
+    ret = malloc(s);                                                           \
+    if (ret == NULL) {                                                         \
+      mawim_panic("xmalloc returned NULL!");                                   \
+    }                                                                          \
+    ret;                                                                       \
+  })
 
-void xfree(void *ptr);
+#define xrealloc(o, s)                                                         \
+  ({                                                                           \
+    void *ret;                                                                 \
+    ret = realloc(o, s);                                                       \
+    if (ret == NULL) {                                                         \
+      mawim_panic("xrealloc returned NULL!");                                  \
+    }                                                                          \
+    ret;                                                                       \
+  })
+
+#define xfree(p)                                                               \
+  if (p != NULL) {                                                             \
+    free(p);                                                                   \
+  } else {                                                                     \
+    mawim_log(LOG_ERROR, __FILE__ ":" STR(__LINE__) ": xfree received NULL!"); \
+  }
 
 #endif /* #ifndef XMEM_H */

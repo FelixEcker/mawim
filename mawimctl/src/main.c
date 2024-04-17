@@ -26,41 +26,43 @@ const char *ERRNAMES[] = {"Ok",
                           "No window currently focused",
                           "MaWiM encountered an internal error"};
 
-/* clang-format off */
-
 #define STR(x) #x
 #define STRINGIFY(x) STR(x)
-#define macro_connection_null_panic() panic( __FILE__  ":" \
-                                             STRINGIFY(__LINE__) \
-                                             ": connection is NULL!" )
+#define macro_connection_null_panic()                                          \
+  panic(__FILE__ ":" STRINGIFY(__LINE__) ": connection is NULL!")
 
-#define connection_non_null(a) if (a == NULL) { macro_connection_null_panic(); }
+#define connection_non_null(a)                                                 \
+  if (a == NULL) {                                                             \
+    macro_connection_null_panic();                                             \
+  }
 
-#define send_cmd(a, b) if (!mawimctl_client_send_command(a, b)) { \
-                         fprintf(stderr, "failed to send command!\n"); \
-                         return 1; \
-                       }
+#define send_cmd(a, b)                                                         \
+  if (!mawimctl_client_send_command(a, b)) {                                   \
+    fprintf(stderr, "failed to send command!\n");                              \
+    return 1;                                                                  \
+  }
 
-#define read_resp(a, b) if (!mawimctl_read_response(a, b)) { \
-                          fprintf(stderr, "failed to read response!\n"); \
-                          return 2; \
-                        }
+#define read_resp(a, b)                                                        \
+  if (!mawimctl_read_response(a, b)) {                                         \
+    fprintf(stderr, "failed to read response!\n");                             \
+    return 2;                                                                  \
+  }
 
-#define handle_resp(c) if (c.status != MAWIMCTL_OK) { \
-                         fprintf(stderr, \
-                                 "MaWiM responded with an error status: " \
-                                 "%s\n", c.status < MAWIMCTL_STATUS_INVALID ? \
-                                         ERRNAMES[c.status] : \
-                                         "unknown error"); \
-                         return 3; \
-                       }
+#define handle_resp(c)                                                         \
+  if (c.status != MAWIMCTL_OK) {                                               \
+    fprintf(stderr,                                                            \
+            "MaWiM responded with an error status: "                           \
+            "%s\n",                                                            \
+            c.status < MAWIMCTL_STATUS_INVALID ? ERRNAMES[c.status]            \
+                                               : "unknown error");             \
+    return 3;                                                                  \
+  }
 
-#define do_cmd(a, b, c) connection_non_null(a); \
-                        send_cmd(a, b); \
-                        read_resp(a, &c); \
-                        handle_resp(c);
-
-/* clang-format on */
+#define do_cmd(a, b, c)                                                        \
+  connection_non_null(a);                                                      \
+  send_cmd(a, b);                                                              \
+  read_resp(a, &c);                                                            \
+  handle_resp(c);
 
 /* command handlers */
 
