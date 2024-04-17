@@ -26,8 +26,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window);
 /**
  * @brief Begin managing a window
  */
-bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
-                         XConfigureRequestEvent event);
+bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window);
 /**
  * @brief Stop managing a window
  */

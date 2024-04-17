@@ -77,10 +77,15 @@ mawimctl_response_t handle_move_focused_to_workspace(mawim_t *mawim,
   }
 
   mawim_window_t *window = workspace->focused_window;
+
+  mawim_unmanage_window(mawim, window);
+  mawim_remove_window(&workspace->windows, window->x11_window, false);
+
   window->workspace = wanted_workspace;
 
-  mawim_remove_window(&workspace->windows, window->x11_window, false);
   mawim_append_window(&dest_workspace->windows, window);
+  mawim_manage_window(mawim, window);
+
   mawim_update_all_windows(mawim);
 
   return resp;

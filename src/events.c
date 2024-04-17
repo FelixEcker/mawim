@@ -78,7 +78,7 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
     mawim_win = window;
   }
 
-  bool manage_result = mawim_manage_window(mawim, mawim_win, event);
+  bool manage_result = mawim_manage_window(mawim, mawim_win);
   if (manage_result) {
     mawim_log(LOG_DEBUG, "Window is being managed now!\n");
   } else {

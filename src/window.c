@@ -64,7 +64,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
 
   mawim_logf(
       LOG_DEBUG,
-      "New Dimensions: active row %d col %d row %d, size %dx%d, pos %dx%d\n",
+      "New Dimensions: ar %d slot %dx%d, size %dx%d, pos %dx%d\n",
       workspace->row_count, window->col, window->row, window->width,
       window->height, window->x, window->y);
 
@@ -79,8 +79,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   mawim_x11_flush(mawim);
 }
 
-bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
-                         XConfigureRequestEvent event) {
+bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window) {
   mawim_workspace_t *workspace = &mawim->workspaces[window->workspace - 1];
 
   if (mawim_find_window(&workspace->windows, window->x11_window) == NULL) {
