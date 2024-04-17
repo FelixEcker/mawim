@@ -62,11 +62,10 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   window->x = window->width * window->col;
   window->y = window->height * window->row;
 
-  mawim_logf(
-      LOG_DEBUG,
-      "New Dimensions: ar %d slot %dx%d, size %dx%d, pos %dx%d\n",
-      workspace->row_count, window->col, window->row, window->width,
-      window->height, window->x, window->y);
+  mawim_logf(LOG_DEBUG,
+             "New Dimensions: ar %d slot %dx%d, size %dx%d, pos %dx%d\n",
+             workspace->row_count, window->col, window->row, window->width,
+             window->height, window->x, window->y);
 
   /* Apply */
   window->changes.x = window->x;
@@ -293,7 +292,8 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
   list->last = mawim_window;
 }
 
-void mawim_remove_window(window_list_t *windows, Window window, bool should_free) {
+void mawim_remove_window(window_list_t *windows, Window window,
+                         bool should_free) {
   if (windows->first == NULL) {
     mawim_log(LOG_DEBUG, "remove_window: windows.first == NULL\n");
     return;

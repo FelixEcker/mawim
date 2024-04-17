@@ -44,8 +44,8 @@ void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
 
   if (mawim_window != NULL) {
     mawim_unmanage_window(mawim, mawim_window);
-    mawim_remove_window(&mawim->workspaces[workspace - 1].windows,
-                        event.window, true);
+    mawim_remove_window(&mawim->workspaces[workspace - 1].windows, event.window,
+                        true);
   } else {
     mawim_log(LOG_DEBUG, "Nothing to destroy!\n");
   }

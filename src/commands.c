@@ -67,7 +67,8 @@ mawimctl_response_t handle_move_focused_to_workspace(mawim_t *mawim,
     return mawimctl_no_such_workspace_response;
   }
 
-  mawim_workspace_t *workspace = &mawim->workspaces[mawim->active_workspace - 1];
+  mawim_workspace_t *workspace =
+      &mawim->workspaces[mawim->active_workspace - 1];
   mawim_workspace_t *dest_workspace = &mawim->workspaces[wanted_workspace - 1];
 
   if (workspace->focused_window == NULL) {
@@ -86,6 +87,9 @@ mawimctl_response_t handle_move_focused_to_workspace(mawim_t *mawim,
   mawim_append_window(&dest_workspace->windows, window);
   mawim_manage_window(mawim, window);
 
+  /* mawim_manage_window doesn't necessarily update all windows,
+   * so do that here again.
+   */
   mawim_update_all_windows(mawim);
 
   return resp;

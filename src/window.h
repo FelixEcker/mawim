@@ -27,6 +27,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window);
  * @brief Begin managing a window
  */
 bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window);
+
 /**
  * @brief Stop managing a window
  */
@@ -58,7 +59,8 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window);
 /**
  * @brief Removes the given window from the window list
  */
-void mawim_remove_window(window_list_t *windows, Window window, bool should_free);
+void mawim_remove_window(window_list_t *windows, Window window,
+                         bool should_free);
 
 /**
  * @brief Destroys the given window list
