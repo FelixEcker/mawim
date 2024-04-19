@@ -26,6 +26,12 @@ const char *ERRNAMES[] = {"Ok",
                           "No window currently focused",
                           "MaWiM encountered an internal error"};
 
+#ifndef DEBUG
+#define MAWIMCTL_CLIENT_VERSION "1.0.0"
+#else
+#define MAWIMCTL_CLIENT_VERSION "1.0.0 [" COMMIT_HASH ", debug build]"
+#endif
+
 #define STR(x) #x
 #define STRINGIFY(x) STR(x)
 #define macro_connection_null_panic()                                          \
@@ -190,6 +196,7 @@ const struct handler cmd_handlers[] = {
 const int cmd_handlers_count = sizeof(cmd_handlers) / sizeof(struct handler);
 
 void list_commands() {
+  fprintf(stderr, "=> client version " MAWIMCTL_CLIENT_VERSION "\n=> protocol version " MAWIMCTL_VERSION "\n\n");
   fprintf(stderr, "Usage: mawimctl <command [parameters]>\n");
   fprintf(stderr, "Commands:\n");
   for (int i = 0; i < cmd_handlers_count; i++) {

@@ -11,7 +11,7 @@ sector config
     str build_type 'incremental'
 
     str cc 'clang'
-    str cflags '-I. -I../include/ -Wall -Wextra -Wno-unused-parameter -std=c17'
+    str cflags '-I. -I../include/ -Wall -Wextra -Wno-unused-parameter -std=c17 -DCOMMIT_HASH=\\"\$(git rev-parse --short HEAD)\\"'
 
     str ldflags ''
 
@@ -39,7 +39,7 @@ mkdir -p $(/config/files/obj)
   end
 
   section debug
-    str target_cflags '-ggdb'
+    str target_cflags '-ggdb -DDEBUG'
     str target_bindest '$(/config/files/bindest)debug/'
 
     list str c_rules 'executable'
