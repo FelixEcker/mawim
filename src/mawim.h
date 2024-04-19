@@ -23,6 +23,7 @@
 
 /**
  * @brief flushes x11 events
+ * @param mawim The mawim instance to flush with
  * @see mawim_x11_discarding_flush
  * @see XSync
  */
@@ -30,6 +31,7 @@ void mawim_x11_flush(mawim_t *mawim);
 
 /**
  * @brief discards x11 events
+ * @param mawim The mawim instance to flush with
  * @see mawim_x11_flush
  * @see XSync
  */
@@ -37,11 +39,13 @@ void mawim_x11_discarding_flush(mawim_t *mawim);
 
 /**
  * @brief initialises x11 for mawim
+ * @param mawim The mawim instance to initialise
  */
 void mawim_x11_init(mawim_t *mawim);
 
 /**
  * @brief does the x11 shutdown for mawim
+ * @param mawim The mawim instance to shutdown
  */
 void mawim_shutdown(mawim_t *mawim);
 

@@ -22,10 +22,37 @@ typedef enum log_level {
 
 extern log_level_t mawim_log_level;
 
+/**
+ * @brief Converts a string representation of a number to its appropriate
+ * log-level
+ * @param str The string to be converted
+ * @return The appropriate log level
+ */
 log_level_t str_to_loglvl(char *str);
 
+/**
+ * @brief Logs a formatted message
+ * @param level The logging level
+ * @param format The format string
+ * @return Upon successful return, the number of characters printed (excluding
+ * the null byte used to end output to strings).
+ */
 int mawim_logf(log_level_t level, const char *format, ...);
+
+/**
+ * @brief Logs a formatted message without a prefix
+ * @param level The logging level
+ * @param format The format string
+ * @return Upon successful return, the number of characters printed (excluding
+ * the null byte used to end output to strings).
+ */
 int mawim_logf_noprefix(log_level_t level, const char *format, ...);
+
+/**
+ * @brief Logs a message
+ * @param level The logging level
+ * @param msg The message
+ */
 void mawim_log(int level, char *msg);
 
 #endif /* #ifndef LOGGING_H */

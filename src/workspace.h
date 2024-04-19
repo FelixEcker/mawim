@@ -28,10 +28,14 @@ void mawim_update_workspaces(mawim_t *mawim);
 /**
  * @brief searches all workspaces for the given X11 window.
  *
+ * @param mawim The mawim instance to operate on
+ * @param x11_window The X11 window to search with
  * @param out_window_list If not NULL, the window list containing the window
  *                        will be written to it.
  * @param out_workspaceid If not NULL, the ID of the workspace containing the
  *                        window will be written to it.
+ * @return NULL if the window was not found, otherwise pointer to the window
+ * structure
  */
 mawim_window_t *
 mawim_find_window_in_workspaces(mawim_t *mawim, Window x11_window,
