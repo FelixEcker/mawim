@@ -1,4 +1,4 @@
-# mawimctl
+# mawimctl protocol 1.0
 MaWiM control - Command line tool for controlling MaWiM
 
 ## Communication
