@@ -26,11 +26,17 @@ typedef struct mawimctl_connection {
 
 /**
  * @brief Establish a connection the mawimctl server / MaWiM
+ * @param where The location in the filesystem where the client should connect
+ * to
+ * @return NULL if connect failed, pointer to newly allocated
+ * mawimctl_connection_t structure otherwise
  */
 mawimctl_connection_t *mawimctl_client_connect(char *where);
 
 /**
  * @brief Send a command to the mawimctl server
+ * @param connection The connection to send the command to
+ * @param command The command
  * @return success
  */
 bool mawimctl_client_send_command(mawimctl_connection_t *connection,
@@ -38,6 +44,9 @@ bool mawimctl_client_send_command(mawimctl_connection_t *connection,
 
 /**
  * @brief Read a response from the mawimctl server into dest
+ * @param connection The connection the response should be read from
+ * @param dest Pointer to a response structure where the response should be
+ * written to
  * @return success
  */
 bool mawimctl_read_response(mawimctl_connection_t *connection,

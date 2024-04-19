@@ -196,7 +196,8 @@ const struct handler cmd_handlers[] = {
 const int cmd_handlers_count = sizeof(cmd_handlers) / sizeof(struct handler);
 
 void list_commands() {
-  fprintf(stderr, "=> client version " MAWIMCTL_CLIENT_VERSION "\n=> protocol version " MAWIMCTL_VERSION "\n\n");
+  fprintf(stderr, "=> client version " MAWIMCTL_CLIENT_VERSION
+                  "\n=> protocol version " MAWIMCTL_VERSION "\n\n");
   fprintf(stderr, "Usage: mawimctl <command [parameters]>\n");
   fprintf(stderr, "Commands:\n");
   for (int i = 0; i < cmd_handlers_count; i++) {
