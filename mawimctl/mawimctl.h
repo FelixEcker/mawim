@@ -13,6 +13,8 @@
 
 /* clang-format off */
 
+#define MAWIMCTL_VERSION "1.0"
+
 #define MAWIMCTL_DEFAULT_SOCK_LOCATION "/tmp/mawim.control.socket"
 #define MAWIMCTL_FLAG_NO_RESPONSE 0b10000000
 
