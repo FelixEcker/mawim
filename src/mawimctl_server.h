@@ -40,30 +40,41 @@ typedef struct mawimctl_server {
 
 /**
  * @brief Starts a mawimctl server
- * @return Heap-Allocated server structure
+ * @param where The location in the filesystem where the socket should be
+ * created
+ * @return Heap-Allocated server structure, NULL on failure
  */
 mawimctl_server_t *mawimctl_server_start(char *where);
 
 /**
  * @brief Stops a mawimctl server and frees the structure
+ * @param server The server instance to be stopped
  */
 void mawimctl_server_stop(mawimctl_server_t *server);
 
 /**
  * @brief Updates the server. This includes accepting all new connection
  *        requests, reading their commands an queueing them.
+ * @param server The server instance to be updated
  */
 void mawimctl_server_update(mawimctl_server_t *server);
 
 /**
  * @brief Gets the first pending command in the server's queue.
+ * @param server The server instance from which the command should be grabbed
+ * @param dest_container Pointer to a mawimctl_command_t structure where the
+ * next command should be written to
  * @return true if a command was in queue, false if the queue was empty.
  */
 bool mawimctl_server_next_command(mawimctl_server_t *server,
                                   mawimctl_command_t *dest_container);
 
 /**
- * @brief Sends a response to the currently connected client.
+ * @brief Sends a response to the specified client.
+ * @param server The server to send the response from
+ * @param sockfd The socket file descriptor of the client to send it to
+ * @param response The response data
+ * @return true on successful response
  */
 bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd,
                              mawimctl_response_t response);
