@@ -38,8 +38,8 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window);
  * @param event The ConfigureRequestEvent causing this management call
  * @return true on success
  */
-bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
-                         XConfigureRequestEvent event);
+bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window);
+
 /**
  * @brief Stop managing a window
  * @param mawim The mawim instance
@@ -89,7 +89,8 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window);
  * @param window The X11 window associated with the mawim_window_t structure to
  * be removed
  */
-void mawim_remove_window(window_list_t *windows, Window window);
+void mawim_remove_window(window_list_t *windows, Window window,
+                         bool should_free);
 
 /**
  * @brief Destroys the given window list

@@ -44,8 +44,8 @@ void handle_destroy_notify(mawim_t *mawim, XDestroyWindowEvent event) {
 
   if (mawim_window != NULL) {
     mawim_unmanage_window(mawim, mawim_window);
-    mawim_remove_window(&mawim->workspaces[workspace - 1].windows,
-                        event.window);
+    mawim_remove_window(&mawim->workspaces[workspace - 1].windows, event.window,
+                        true);
   } else {
     mawim_log(LOG_DEBUG, "Nothing to destroy!\n");
   }
@@ -78,7 +78,7 @@ void handle_configure_request(mawim_t *mawim, XConfigureRequestEvent event) {
     mawim_win = window;
   }
 
-  bool manage_result = mawim_manage_window(mawim, mawim_win, event);
+  bool manage_result = mawim_manage_window(mawim, mawim_win);
   if (manage_result) {
     mawim_log(LOG_DEBUG, "Window is being managed now!\n");
   } else {

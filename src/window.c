@@ -62,11 +62,10 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   window->x = window->width * window->col;
   window->y = window->height * window->row;
 
-  mawim_logf(
-      LOG_DEBUG,
-      "New Dimensions: active row %d col %d row %d, size %dx%d, pos %dx%d\n",
-      workspace->row_count, window->col, window->row, window->width,
-      window->height, window->x, window->y);
+  mawim_logf(LOG_DEBUG,
+             "New Dimensions: ar %d slot %dx%d, size %dx%d, pos %dx%d\n",
+             workspace->row_count, window->col, window->row, window->width,
+             window->height, window->x, window->y);
 
   /* Apply */
   window->changes.x = window->x;
@@ -79,8 +78,7 @@ void mawim_update_window(mawim_t *mawim, mawim_window_t *window) {
   mawim_x11_flush(mawim);
 }
 
-bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window,
-                         XConfigureRequestEvent event) {
+bool mawim_manage_window(mawim_t *mawim, mawim_window_t *window) {
   mawim_workspace_t *workspace = &mawim->workspaces[window->workspace - 1];
 
   if (mawim_find_window(&workspace->windows, window->x11_window) == NULL) {
@@ -246,6 +244,11 @@ int mawim_get_wins_on_row(window_list_t *list, mawimctl_workspaceid_t workspace,
     if (current->row == row && current->workspace == workspace) {
       count++;
     }
+
+    /* sanity check */
+    if (current != NULL && current == current->next) {
+      mawim_panic("circular linked list!\n");
+    }
   }
 
   /* Early exit if list of windows is not wanted */
@@ -290,11 +293,17 @@ void mawim_append_window(window_list_t *list, mawim_window_t *mawim_window) {
     return;
   }
 
+  /* avoid circular linkage, how does this happend ? */
+  if (list->last == mawim_window) {
+    return;
+  }
+
   list->last->next = mawim_window;
   list->last = mawim_window;
 }
 
-void mawim_remove_window(window_list_t *windows, Window window) {
+void mawim_remove_window(window_list_t *windows, Window window,
+                         bool should_free) {
   if (windows->first == NULL) {
     mawim_log(LOG_DEBUG, "remove_window: windows.first == NULL\n");
     return;
@@ -322,7 +331,9 @@ void mawim_remove_window(window_list_t *windows, Window window) {
     windows->first = current->next;
   }
 
-  xfree(current);
+  if (should_free) {
+    xfree(current);
+  }
 }
 
 void mawim_destroy_window_list(window_list_t *list) {
