@@ -13,7 +13,7 @@
 #include <X11/Xlib.h>
 #include <X11/cursorfont.h>
 
-#define BASE_VERSION "0.3.0 (develop-test)"
+#define BASE_VERSION "0.3.1 (develop-test)"
 
 #ifndef DEBUG
 #define MAWIM_VERSION BASE_VERSION
