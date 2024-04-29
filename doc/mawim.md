@@ -6,7 +6,7 @@
 ## Usage
 **Synposis:** `mawim [--config=CONFIG_PATH] [--verbosity=VERBOSITY_LEVEL]`
 
-**NOTE: the --config and --verbosity arguments are not implemented!**
+**NOTE: the `--config` argument is not implemented!**
 
 ### Environment Variables
 * `MAWIMCTL_SOCK` Specifies the location for the mawimctl socket in the filesystem.
