@@ -203,7 +203,7 @@ void mawim_update_all_windows(mawim_t *mawim) {
   for (mawimctl_workspaceid_t wid = 0; wid < mawim->workspace_count; wid++) {
     mawim_window_t *current = mawim->workspaces[wid].windows.first;
     if (current == NULL) {
-      return;
+      continue;
     }
 
     mawim_update_window(mawim, current);
