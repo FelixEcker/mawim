@@ -74,6 +74,8 @@ mawimctl_server_t *mawimctl_server_start(char *where) {
 
   mawimctl_server_t *server = xmalloc(sizeof(mawimctl_server_t));
   server->sock_path = where;
+  server->pending_cmd_count = 0;
+  server->pending_cmds = NULL;
 
   /* Initialise Socket */
   server->sock_fd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
@@ -288,6 +290,7 @@ bool mawimctl_server_respond(mawimctl_server_t *server, int sockfd,
                              mawimctl_response_t response) {
   size_t sendbuf_size = MAWIMCTL_RESPONSE_BASESIZE + response.data_length;
   uint8_t *sendbuf = xmalloc(sendbuf_size);
+  memset(sendbuf, 0, sendbuf_size);
 
   /* Copy data to send buffer */
   int cpyoffs = 0;
