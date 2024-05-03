@@ -41,7 +41,7 @@ typedef struct mawimctl_server {
 /**
  * @brief Starts a mawimctl server
  * @param where The location in the filesystem where the socket should be
- * created
+ * created. If NULL it will default to MAWIMCTL_DEFAULT_SOCK_LOCATION
  * @return Heap-Allocated server structure, NULL on failure
  */
 mawimctl_server_t *mawimctl_server_start(char *where);
