@@ -124,6 +124,9 @@ int do_move_focused_to_workspace(mawimctl_connection_t *connection, int argc,
   }
 
   mawimctl_workspaceid_t wanted_workspace = atoi(argv[0]);
+  if (wanted_workspace < 1 || wanted_workspace > 9) {
+    panic("atoi for wanted_workspace failed!");
+  }
 
   mawimctl_command_t cmd = {.command_identifier =
                                 MAWIMCTL_MOVE_FOCUSED_TO_WORKSPACE,
@@ -154,6 +157,9 @@ int set_workspace(mawimctl_connection_t *connection, int argc, char **argv) {
   }
 
   mawimctl_workspaceid_t wanted_workspace = atoi(argv[0]);
+  if (wanted_workspace < 1 || wanted_workspace > 9) {
+    panic("atoi for wanted_workspace failed!");
+  }
 
   mawimctl_command_t cmd = {.command_identifier = MAWIMCTL_SET_WORKSPACE,
                             .flags = 0,
