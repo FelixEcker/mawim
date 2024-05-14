@@ -26,10 +26,13 @@ const char *ERRNAMES[] = {"Ok",
                           "No window currently focused",
                           "MaWiM encountered an internal error"};
 
+#define MAWIMCTL_CLIENT_BASEVERSION "1.0.1"
+
 #ifndef DEBUG
-#define MAWIMCTL_CLIENT_VERSION "1.0.0"
+#define MAWIMCTL_CLIENT_VERSION MAWIMCTL_CLIENT_BASEVERSION
 #else
-#define MAWIMCTL_CLIENT_VERSION "1.0.0 [" COMMIT_HASH ", debug build]"
+#define MAWIMCTL_CLIENT_VERSION                                                \
+  MAWIMCTL_CLIENT_BASEVERSION " [" COMMIT_HASH ", debug build]"
 #endif
 
 #define STR(x) #x
